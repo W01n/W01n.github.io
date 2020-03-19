@@ -1,0 +1,75 @@
+marym:x:1001:1001:Mary Moe:/home/marym:/bin/bash 
+julied:x:1002:1002:Julie Dooley:/home/julied:/bin/bash 
+fredf:x:1003:1003:Fred Flintstone:/home/fredf:/bin/bash 
+barneyr:x:1004:1004:Barney Rubble:/home/barneyr:/bin/bash 
+tomc:x:1005:1005:Tom Cat:/home/tomc:/bin/bash 
+jerrym:x:1006:1006:Jerry Mouse:/home/jerrym:/bin/bash 
+wilmaf:x:1007:1007:Wilma Flintstone:/home/wilmaf:/bin/bash 
+bettyr:x:1008:1008:Betty Rubble:/home/bettyr:/bin/bash 
+chandlerb:x:1009:1009:Chandler Bing:/home/chandlerb:/bin/bash 
+joeyt:x:1010:1010:Joey Tribbiani:/home/joeyt:/bin/bash 
+rachelg:x:1011:1011:Rachel Green:/home/rachelg:/bin/bash 
+rossg:x:1012:1012:Ross Geller:/home/rossg:/bin/bash 
+monicag:x:1013:1013:Monica Geller:/home/monicag:/bin/bash 
+phoebeb:x:1014:1014:Phoebe Buffay:/home/phoebeb:/bin/bash 
+scoots:x:1015:1015:Scooter McScoots:/home/scoots:/bin/bash 
+janitor:x:1016:1016:Donald Trump:/home/janitor:/bin/bash 
+janitor2:x:1017:1017:Scott Morrison:/home/janitor2:/bin/bash
+
++----+------------+---------------+---------------------+-----------+-----------+
+| id | lastname   | password      | reg_date            | username  | firstname |
++----+------------+---------------+---------------------+-----------+-----------+
+| 1  | Moe        | 3kfs86sfd     | 2019-12-29 16:58:26 | marym     | Mary      |
+| 2  | Dooley     | 468sfdfsd2    | 2019-12-29 16:58:26 | julied    | Julie     |
+| 3  | Flintstone | 4sfd87sfd1    | 2019-12-29 16:58:26 | fredf     | Fred      |
+| 4  | Rubble     | RocksOff      | 2019-12-29 16:58:26 | barneyr   | Barney    |
+| 5  | Cat        | TC&TheBoyz    | 2019-12-29 16:58:26 | tomc      | Tom       |
+| 6  | Mouse      | B8m#48sd      | 2019-12-29 16:58:26 | jerrym    | Jerry     |
+| 7  | Flintstone | Pebbles       | 2019-12-29 16:58:26 | wilmaf    | Wilma     |
+| 8  | Rubble     | BamBam01      | 2019-12-29 16:58:26 | bettyr    | Betty     |
+| 9  | Bing       | UrAG0D!       | 2019-12-29 16:58:26 | chandlerb | Chandler  |
+| 10 | Tribbiani  | Passw0rd      | 2019-12-29 16:58:26 | joeyt     | Joey      |
+| 11 | Green      | yN72#dsd      | 2019-12-29 16:58:26 | rachelg   | Rachel    |
+| 12 | Geller     | ILoveRachel   | 2019-12-29 16:58:26 | rossg     | Ross      |
+| 13 | Geller     | 3248dsds7s    | 2019-12-29 16:58:26 | monicag   | Monica    |
+| 14 | Buffay     | smellycats    | 2019-12-29 16:58:26 | phoebeb   | Phoebe    |
+| 15 | McScoots   | YR3BVxxxw87   | 2019-12-29 16:58:26 | scoots    | Scooter   |
+| 16 | Trump      | Ilovepeepee   | 2019-12-29 16:58:26 | janitor   | Donald    |
+| 17 | Morrison   | Hawaii-Five-0 | 2019-12-29 16:58:28 | janitor2  | Scott     |
++----+------------+---------------+---------------------+-----------+-----------+
+
+marym
+julied 
+fredf
+barneyr
+tomc
+jerrym
+wilmaf
+bettyr
+chandlerb
+joeyt
+rachelg
+rossg
+monicag
+phoebeb
+scoots
+janitor
+janitor2
+
+3kfs86sfd
+468sfdfsd2
+4sfd87sfd1
+RocksOff
+TC&TheBoyz
+B8m#48sd
+Pebbles
+BamBam01
+UrAG0D!
+Passw0rd
+yN72#dsd
+ILoveRachel
+3248dsds7s
+smellycats
+YR3BVxxxw87
+Ilovepeepee
+Hawaii-Five-0

