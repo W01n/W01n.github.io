@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"w01n.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="HF2019-Linux Walkthrough第一步日常先打开靶机 这次是个Debian64位的靶机  还是nmap先确定IP 192.168.0.118   页面先访问一下  可以看到是个wordpress的站   然后日常扫一波端口  看看有没有什么利用点">
+  <meta name="description" content="HF2019-Linux Walkthrough">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VulnHub Walkthrough(二)">
 <meta property="og:url" content="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/index.html">
 <meta property="og:site_name" content="oslo&#39;S Blog">
-<meta property="og:description" content="HF2019-Linux Walkthrough第一步日常先打开靶机 这次是个Debian64位的靶机  还是nmap先确定IP 192.168.0.118   页面先访问一下  可以看到是个wordpress的站   然后日常扫一波端口  看看有没有什么利用点">
+<meta property="og:description" content="HF2019-Linux Walkthrough">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/1.png">
 <meta property="og:image" content="https://w01n.github.io/images/vulnhub/HF2019%20img/2.png">
@@ -354,16 +354,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="HF2019-Linux-Walkthrough"><a href="#HF2019-Linux-Walkthrough" class="headerlink" title="HF2019-Linux Walkthrough"></a>HF2019-Linux Walkthrough</h1><p>第一步日常先打开靶机 这次是个Debian64位的靶机 </p>
+        <h1 id="HF2019-Linux-Walkthrough"><a href="#HF2019-Linux-Walkthrough" class="headerlink" title="HF2019-Linux Walkthrough"></a>HF2019-Linux Walkthrough</h1> <a id="more"></a>
+
+<p>第一步日常先打开靶机 这次是个Debian64位的靶机 </p>
 <p>还是nmap先确定IP 192.168.0.118</p>
 <img data-src="/images/vulnhub/HF2019 img/1.png" style="zoom:60%;" />
 
 <p>页面先访问一下  可以看到是个wordpress的站</p>
 <img data-src="/images/vulnhub/HF2019 img/2.png" style="zoom:60%;" />
 
-<p>然后日常扫一波端口  看看有没有什么利用点</p>
- <a id="more"></a> 
-
+<p>然后日常扫一波端口  看看有没有什么利用点 </p>
 <p>这里可以看到靶机开了ftp匿名登录 也可以看到是wp的站和其他文件</p>
 <img data-src="/images/vulnhub/HF2019 img/3.png" style="zoom:60%;" />
 

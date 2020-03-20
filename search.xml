@@ -3,16 +3,16 @@
   <entry>
     <title>VulnHub Walkthrough(二)</title>
     <url>/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/</url>
-    <content><![CDATA[<h1 id="HF2019-Linux-Walkthrough"><a href="#HF2019-Linux-Walkthrough" class="headerlink" title="HF2019-Linux Walkthrough"></a>HF2019-Linux Walkthrough</h1><p>第一步日常先打开靶机 这次是个Debian64位的靶机 </p>
+    <content><![CDATA[<h1 id="HF2019-Linux-Walkthrough"><a href="#HF2019-Linux-Walkthrough" class="headerlink" title="HF2019-Linux Walkthrough"></a>HF2019-Linux Walkthrough</h1> <a id="more"></a>
+
+<p>第一步日常先打开靶机 这次是个Debian64位的靶机 </p>
 <p>还是nmap先确定IP 192.168.0.118</p>
 <img data-src="/images/vulnhub/HF2019 img/1.png" style="zoom:60%;" />
 
 <p>页面先访问一下  可以看到是个wordpress的站</p>
 <img data-src="/images/vulnhub/HF2019 img/2.png" style="zoom:60%;" />
 
-<p>然后日常扫一波端口  看看有没有什么利用点</p>
- <a id="more"></a> 
-
+<p>然后日常扫一波端口  看看有没有什么利用点 </p>
 <p>这里可以看到靶机开了ftp匿名登录 也可以看到是wp的站和其他文件</p>
 <img data-src="/images/vulnhub/HF2019 img/3.png" style="zoom:60%;" />
 
@@ -985,11 +985,11 @@
   <entry>
     <title>SqlMap使用小记</title>
     <url>/2020/03/18/SqlMap%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0/</url>
-    <content><![CDATA[<h1 id="Sqlmap使用的小小总结QAQ"><a href="#Sqlmap使用的小小总结QAQ" class="headerlink" title="Sqlmap使用的小小总结QAQ"></a>Sqlmap使用的小小总结QAQ</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>最近在学习使用Sqlmap，看了很多文章，很多很杂，所以自己写一个小小的使用总结</p>
+    <content><![CDATA[<h1 id="Sqlmap使用的小小总结QAQ"><a href="#Sqlmap使用的小小总结QAQ" class="headerlink" title="Sqlmap使用的小小总结QAQ"></a>Sqlmap使用的小小总结QAQ</h1><a id="more"></a> 
+
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>最近在学习使用Sqlmap，看了很多文章，很多很杂，所以自己写一个小小的使用总结</p>
 <p>如有不对请多多包涵 : -）</p>
 <h2 id="先了解"><a href="#先了解" class="headerlink" title="先了解"></a>先了解</h2><p>SQLmap是一个自动化的SQL注入工具，其主要功能是扫描，发现并利用给定的URL的SQL注入漏洞，目前支持的数据库是MySQL，Oracle，PostgreSQL，Microsoft SQL Server，Microsoft Acess，IBM DB2，SQLLite，Firebird，Sybase和SAP MaxDB……SQLmap采用几种独特的SQL注入技术，分别是盲推理SQL注入，UNION查询SQL注入，对查询和盲注。其广泛的功能和选项包括数据库指纹，枚举，数据库提取，访问目标文件系统，并在获取完全操作权限时实行任意命令。</p>
- <a id="more"></a> 
-
 <p>当给Sqlmap一个url跑的时候，它会：</p>
 <p>1.判断注入时选择的参数</p>
 <p>2.判断识别出使用的那种数据库</p>

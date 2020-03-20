@@ -25,14 +25,7 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;HF2019-Linux-Walkthrough&quot;&gt;&lt;a href=&quot;#HF2019-Linux-Walkthrough&quot; class=&quot;headerlink&quot; title=&quot;HF2019-Linux Walkthrough&quot;&gt;&lt;/a&gt;HF2019-Linux Walkthrough&lt;/h1&gt;&lt;p&gt;第一步日常先打开靶机 这次是个Debian64位的靶机 &lt;/p&gt;
-&lt;p&gt;还是nmap先确定IP 192.168.0.118&lt;/p&gt;
-&lt;img data-src=&quot;/images/vulnhub/HF2019 img/1.png&quot; style=&quot;zoom:60%;&quot; /&gt;
-
-&lt;p&gt;页面先访问一下  可以看到是个wordpress的站&lt;/p&gt;
-&lt;img data-src=&quot;/images/vulnhub/HF2019 img/2.png&quot; style=&quot;zoom:60%;&quot; /&gt;
-
-&lt;p&gt;然后日常扫一波端口  看看有没有什么利用点&lt;/p&gt;
+      &lt;h1 id=&quot;HF2019-Linux-Walkthrough&quot;&gt;&lt;a href=&quot;#HF2019-Linux-Walkthrough&quot; class=&quot;headerlink&quot; title=&quot;HF2019-Linux Walkthrough&quot;&gt;&lt;/a&gt;HF2019-Linux Walkthrough&lt;/h1&gt;
     
     </summary>
     
@@ -78,9 +71,7 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;Sqlmap使用的小小总结QAQ&quot;&gt;&lt;a href=&quot;#Sqlmap使用的小小总结QAQ&quot; class=&quot;headerlink&quot; title=&quot;Sqlmap使用的小小总结QAQ&quot;&gt;&lt;/a&gt;Sqlmap使用的小小总结QAQ&lt;/h1&gt;&lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;最近在学习使用Sqlmap，看了很多文章，很多很杂，所以自己写一个小小的使用总结&lt;/p&gt;
-&lt;p&gt;如有不对请多多包涵 : -）&lt;/p&gt;
-&lt;h2 id=&quot;先了解&quot;&gt;&lt;a href=&quot;#先了解&quot; class=&quot;headerlink&quot; title=&quot;先了解&quot;&gt;&lt;/a&gt;先了解&lt;/h2&gt;&lt;p&gt;SQLmap是一个自动化的SQL注入工具，其主要功能是扫描，发现并利用给定的URL的SQL注入漏洞，目前支持的数据库是MySQL，Oracle，PostgreSQL，Microsoft SQL Server，Microsoft Acess，IBM DB2，SQLLite，Firebird，Sybase和SAP MaxDB……SQLmap采用几种独特的SQL注入技术，分别是盲推理SQL注入，UNION查询SQL注入，对查询和盲注。其广泛的功能和选项包括数据库指纹，枚举，数据库提取，访问目标文件系统，并在获取完全操作权限时实行任意命令。&lt;/p&gt;
+      &lt;h1 id=&quot;Sqlmap使用的小小总结QAQ&quot;&gt;&lt;a href=&quot;#Sqlmap使用的小小总结QAQ&quot; class=&quot;headerlink&quot; title=&quot;Sqlmap使用的小小总结QAQ&quot;&gt;&lt;/a&gt;Sqlmap使用的小小总结QAQ&lt;/h1&gt;
     
     </summary>
     
