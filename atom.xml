@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://w01n.github.io/"/>
-  <updated>2020-03-18T08:10:31.000Z</updated>
+  <updated>2020-03-21T16:32:30.000Z</updated>
   <id>https://w01n.github.io/</id>
   
   <author>
@@ -17,6 +17,31 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>SQL注入小记录</title>
+    <link href="https://w01n.github.io/2020/03/22/SQL%E6%B3%A8%E5%85%A5%E5%B0%8F%E8%AE%B0%E5%BD%95/"/>
+    <id>https://w01n.github.io/2020/03/22/SQL%E6%B3%A8%E5%85%A5%E5%B0%8F%E8%AE%B0%E5%BD%95/</id>
+    <published>2020-03-21T16:32:30.000Z</published>
+    <updated>2020-03-21T16:32:30.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Sql注入小记录&quot;&gt;&lt;a href=&quot;#Sql注入小记录&quot; class=&quot;headerlink&quot; title=&quot;Sql注入小记录&quot;&gt;&lt;/a&gt;Sql注入小记录&lt;/h1&gt;
+    
+    </summary>
+    
+    
+      <category term="SQLinjection" scheme="https://w01n.github.io/categories/SQLinjection/"/>
+    
+      <category term="Penetration" scheme="https://w01n.github.io/categories/SQLinjection/Penetration/"/>
+    
+    
+      <category term="SQLi" scheme="https://w01n.github.io/tags/SQLi/"/>
+    
+      <category term="Recording" scheme="https://w01n.github.io/tags/Recording/"/>
+    
+  </entry>
+  
+  <entry>
     <title>VulnHub Walkthrough(二)</title>
     <link href="https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/"/>
     <id>https://w01n.github.io/2020/03/18/VulnHub-Walkthrough-%E4%BA%8C/</id>
@@ -25,7 +50,7 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;HF2019-Linux-Walkthrough&quot;&gt;&lt;a href=&quot;#HF2019-Linux-Walkthrough&quot; class=&quot;headerlink&quot; title=&quot;HF2019-Linux Walkthrough&quot;&gt;&lt;/a&gt;HF2019-Linux Walkthrough&lt;/h1&gt;
+      &lt;h1 id=&quot;十篇-walkthrough-二&quot;&gt;&lt;a href=&quot;#十篇-walkthrough-二&quot; class=&quot;headerlink&quot; title=&quot;十篇 walkthrough(二)&quot;&gt;&lt;/a&gt;十篇 walkthrough(二)&lt;/h1&gt;
     
     </summary>
     
@@ -48,7 +73,7 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;十篇-walkthrough&quot;&gt;&lt;a href=&quot;#十篇-walkthrough&quot; class=&quot;headerlink&quot; title=&quot;十篇 walkthrough&quot;&gt;&lt;/a&gt;十篇 walkthrough&lt;/h1&gt;
+      &lt;h1 id=&quot;十篇-walkthrough-一&quot;&gt;&lt;a href=&quot;#十篇-walkthrough-一&quot; class=&quot;headerlink&quot; title=&quot;十篇 walkthrough(一)&quot;&gt;&lt;/a&gt;十篇 walkthrough(一)&lt;/h1&gt;
     
     </summary>
     
