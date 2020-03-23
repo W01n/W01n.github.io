@@ -55,7 +55,7 @@
 
 <p>但还是可以看到有个memberadmin 应该是管理员用户名和密码的表</p>
 <p>然后又去找了一下后台看了一下 源码 直接硬猜字段名</p>
-<img data-src="C:\Users\Administrator\Desktop\Folders\oslo\sqlRecord1\7.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/7.png" style="zoom:50%;" />
 
 <p>可以猜nickname username 密码应该就是password的 都试一下 发现nickname是可以的</p>
 <p>payload：</p>
