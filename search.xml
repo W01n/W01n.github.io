@@ -14,15 +14,15 @@
 <p>空格是%0B 单引号是%27之类的</p>
 <p>之前不是waf拦截就是跳转一下又回到本页面 都是被做了过滤</p>
 <p>这是个怎么情况  那我就想搞搞 菜归菜 但是搞还是要搞</p>
-<img data-src="/images/slqRecord1/1.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/1.png" style="zoom:50%;" />
 
 <p>不用单引号 换成其他的试试 直接and 1=1还是直接弹error 然后再试试其他的看是否弹窗</p>
 <p>哦豁 直接发现有waf 是个安全狗的waf  然后google安全狗的绕过之类的  一个个测试一下</p>
-<img data-src="/images/slqRecord1/2.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/2.png" style="zoom:50%;" />
 
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#39;  #拦截弹窗error</span><br><span class="line">&quot;  #未拦截 且有sql报错</span><br><span class="line">and  #拦截弹窗error</span><br><span class="line">&#x2F;**&#x2F; #未拦截</span><br><span class="line">其他的类似union select肯定waf是拦截了的  我就不测试了</span><br><span class="line">网上有很多绕过的写法 我这里就不写了</span><br><span class="line">convert  #未拦截 这个函数可以利用下 ---&gt; convert(int,@@version)</span><br></pre></td></tr></table></figure>
 
- <img data-src="/images/slqRecord1/3.png" style="zoom:50%;" />
+ <img data-src="/images/sqlRecord1/3.png" style="zoom:50%;" />
 
 <p>这里就可以获取很多信息了</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@@version：Microsoft SQL Server 2008 R2 (RTM) - 10.50.1600.1 (X64)</span><br><span class="line">Apr  2 2010 15:48:46</span><br><span class="line">Copyright (c) Microsoft Corporation</span><br><span class="line">Express Edition with Advanced Services (64-bit) on Windows NT 6.1 &lt;X64&gt; (Build 7601: Service Pack 1) (Hypervisor)</span><br></pre></td></tr></table></figure>
@@ -41,28 +41,28 @@
 <p>里面的空格换行都用了url编码代替 关于top字句可以了解一下 用于规定返回的记录的数目</p>
 <p>这里后面的top用来遍历的 前面的top规定只返回一条记录</p>
 <p>这里可以先手工注入一下表名 看看特征什么的 就用上面的那个条payload 后面的top变化时可以注入处不同的表名</p>
-<img data-src="/images/slqRecord1/4.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/4.png" style="zoom:50%;" />
 
 <p>可以看到注入出表名了  这后面又学到了一个新姿势 后面可以遍历top后面的数字 用burp来爆破它的表名 然后把结果提取出来就可以了 </p>
 <p>将包重放一下 观察一下返回的内容 和我们想要的数据的位置 然后放到爆破模块里面</p>
 <p>对payload里面的top后面跟的值进行遍历</p>
-<img data-src="/images/slqRecord1/5.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/5.png" style="zoom:50%;" />
 
 <p>在爆破的options里面的 这里添加add 可以从返回的包里面过滤出自己想要的东西</p>
 <p>payload选择numbers 从1到500  </p>
 <p>结束爆破后 可以点左上角的save 保存为txt文件 只跑出来一点 因为有waf 请求频率过高 做了限制</p>
-<img data-src="/images/slqRecord1/6.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/6.png" style="zoom:50%;" />
 
 <p>但还是可以看到有个memberadmin 应该是管理员用户名和密码的表</p>
 <p>然后又去找了一下后台看了一下 源码 直接硬猜字段名</p>
-<img data-src="C:\Users\Administrator\Desktop\Folders\oslo\slqRecord\7.png" style="zoom:50%;" />
+<img data-src="C:\Users\Administrator\Desktop\Folders\oslo\sqlRecord\7.png" style="zoom:50%;" />
 
 <p>可以猜nickname username 密码应该就是password的 都试一下 发现nickname是可以的</p>
 <p>payload：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">?id&#x3D;--&#x2F;*%0a(select%0btop%0b1%0bnickname%0bfrom%0bmemberadmin)--%20*&#x2F;</span><br></pre></td></tr></table></figure>
 
 <p>这里注入出用户名就是admin</p>
-<img data-src="/images/slqRecord1/8.png" style="zoom:50%;" />
+<img data-src="/images/sqlRecord1/8.png" style="zoom:50%;" />
 
 <p>然后nickname换成password  发现不行了？？ what？ 页面返回正常？ 没报错</p>
 <p>对比一下之前的是转换int出错 而在这里没报错 难道它密码是可以转换成int型 还是密码就是int型</p>
