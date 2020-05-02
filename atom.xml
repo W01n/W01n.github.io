@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://w01n.github.io/"/>
-  <updated>2020-03-30T11:53:25.000Z</updated>
+  <updated>2020-05-02T02:32:39.000Z</updated>
   <id>https://w01n.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Waf &amp;&amp; Bypass</title>
+    <link href="https://w01n.github.io/2020/05/02/Waf-Bypass/"/>
+    <id>https://w01n.github.io/2020/05/02/Waf-Bypass/</id>
+    <published>2020-05-02T02:32:39.000Z</published>
+    <updated>2020-05-02T02:32:39.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Waf-amp-amp-Bypass&quot;&gt;&lt;a href=&quot;#Waf-amp-amp-Bypass&quot; class=&quot;headerlink&quot; title=&quot;Waf &amp;amp;&amp;amp; Bypass&quot;&gt;&lt;/a&gt;Waf &amp;amp;&amp;amp; Bypass&lt;/h1&gt;
+    
+    </summary>
+    
+    
+      <category term="Penetration" scheme="https://w01n.github.io/categories/Penetration/"/>
+    
+    
+      <category term="Bypass" scheme="https://w01n.github.io/tags/Bypass/"/>
+    
+      <category term="Recording" scheme="https://w01n.github.io/tags/Recording/"/>
+    
+  </entry>
   
   <entry>
     <title>Some Tips</title>
@@ -33,9 +56,9 @@
       <category term="Penetration" scheme="https://w01n.github.io/categories/Penetration/"/>
     
     
-      <category term="Tips" scheme="https://w01n.github.io/tags/Tips/"/>
-    
       <category term="Recording" scheme="https://w01n.github.io/tags/Recording/"/>
+    
+      <category term="Tips" scheme="https://w01n.github.io/tags/Tips/"/>
     
   </entry>
   

